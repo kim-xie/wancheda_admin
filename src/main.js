@@ -7,11 +7,11 @@ import VueResource from 'vue-resource'
 import store from './store/store'
 
 // 引入elementui
- import ElementUI from 'element-ui'
- import 'element-ui/lib/theme-default/index.css'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-default/index.css'
 
- import 'iview/dist/iview.min.js'
- import 'iview/dist/styles/iview.css'
+import 'iview/dist/iview.min.js'
+import 'iview/dist/styles/iview.css'
 
 // 引入公共css
 import 'assets/css/common.css'

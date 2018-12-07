@@ -106,7 +106,7 @@
                         <el-form-item label="部门名称" :label-width="formLabelWidth" style="width:260px;" prop="department">
                           <el-input v-model="outpartingForm.department" placeholder="部门名称"></el-input>
                         </el-form-item>
-                      </template> 
+                      </template>
                       <el-form-item label="领料人" :label-width="formLabelWidth" style="width:260px;" prop="receiver">
                         <el-select v-model="outpartingForm.receiver" placeholder="请选择领料人">
                           <el-option
@@ -146,7 +146,7 @@
                   <el-table-column align="center" prop="produceArea" label="产地" show-overflow-tooltip></el-table-column>
                   <el-table-column align="center" prop="carModel" label="适用车型" show-overflow-tooltip></el-table-column>
                   <el-table-column align="center" label="操作" show-overflow-tooltip>
-                    <template scope="scope">
+                    <template slots-scope="scope">
                       <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                       <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>

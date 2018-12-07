@@ -59,7 +59,7 @@
           </div>
           <el-table :data="clientTableData" border tooltip-effect="dark" style="width: 100%" :default-sort = "{prop: 'createTime', order: 'descending'}" @selection-change="handleSelectionChange">
             <el-table-column type="expand">
-              <template scope="props">
+              <template slots-scope="props">
                 <el-form label-position="left" inline class="demo-table-expand">
                   <el-form-item label="证件号:">
                     <span>{{ props.row.idcard }}</span>
@@ -105,7 +105,7 @@
             <el-table-column align="center" prop="address" label="客户地址" show-overflow-tooltip> </el-table-column>
             <el-table-column align="center" prop="createTime" sortable width="180" label="创建时间" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" label="操作" width="150">
-              <template scope="scope">
+              <template slots-scope="scope">
                 <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                 <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
               </template>
@@ -261,7 +261,7 @@
           <el-table-column align="center" prop="date.couponId.value" label="优惠券名称" show-overflow-tooltip></el-table-column>
           <el-table-column align="center" prop="num" label="优惠券数量" show-overflow-tooltip></el-table-column>
           <el-table-column align="center" label="操作">
-            <template scope="scope">
+            <template slots-scope="scope">
               <!-- <el-button size="small" @click="editItem(scope.$index, scope.row)">编辑</el-button> -->
               <el-button size="small" type="danger" @click="removeItem(scope.$index, scope.row)">删除</el-button>
             </template>

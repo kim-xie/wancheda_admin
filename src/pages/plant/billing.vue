@@ -66,7 +66,7 @@
           </div>
           <el-table :data="clientTableData" border tooltip-effect="dark" style="width: 100%">
             <el-table-column type="expand">
-              <template scope="props">
+              <template slots-scope="props">
                 <el-form label-position="left" inline class="demo-table-expand">
                   <el-form-item label="证件号">
                     <span>{{ props.row.idcard }}</span>
@@ -117,7 +117,7 @@
             <el-table-column align="center" prop="levelVal" label="客户级别" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" prop="address" label="客户地址" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" label="操作" show-overflow-tooltip>
-              <template scope="scope">
+              <template slots-scope="scope">
                 <el-button size="small" type="info" :plain="true" @click="showForm = true">修改</el-button>
               </template>
             </el-table-column>
@@ -145,7 +145,7 @@
             <el-table-column align="center" prop="mechanicVal" label="技师" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" prop="description" label="备注" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" label="操作" show-overflow-tooltip>
-              <template scope="scope">
+              <template slots-scope="scope">
                 <el-button size="small" type="info" :plain="true" @click="editRepairItem(scope.$index, scope.row)">修改</el-button>
                 <el-button size="small" type="danger" :plain="true" @click="deleteRepairItem(scope.$index, scope.row)">删除</el-button>
               </template>
@@ -174,7 +174,7 @@
             <el-table-column align="center" prop="receiverVal" label="领料人" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" prop="description" label="备注" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" label="操作" show-overflow-tooltip>
-              <template scope="scope">
+              <template slots-scope="scope">
                 <el-button size="small" type="info" :plain="true" @click="editOutPart(scope.$index, scope.row)">修改</el-button>
                 <el-button size="small" type="danger" :plain="true" @click="deleteOutPart(scope.$index, scope.row)">退料</el-button>
               </template>
@@ -322,7 +322,7 @@
             <el-table-column align="center" prop="date.workTypeLK.value" label="工种" width="70"></el-table-column>
             <el-table-column align="center" prop="description" label="备注" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" label="操作" width="80">
-              <template scope="scope">
+              <template slots-scope="scope">
                 <el-button size="small" @click="selectRepairItem(scope.$index, scope.row)">选择</el-button>
               </template>
             </el-table-column>
@@ -394,7 +394,7 @@
             <el-table-column align="center" prop="carModel" label="适用车型" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" prop="repCodeLKVal" label="库位号" width="80"></el-table-column>
             <el-table-column align="center" label="操作" width="80">
-              <template scope="scope">
+              <template slots-scope="scope">
                 <el-button size="small" @click="outpart(scope.$index, scope.row)">出库</el-button>
               </template>
             </el-table-column>
@@ -460,7 +460,7 @@
           <el-table-column align="center" prop="date.couponId.value" label="优惠券名称" show-overflow-tooltip></el-table-column>
           <el-table-column align="center" prop="num" label="优惠券数量" show-overflow-tooltip></el-table-column>
           <el-table-column align="center" label="操作">
-            <template scope="scope">
+            <template slots-scope="scope">
               <el-button size="small" @click="useCoupon(scope.$index, scope.row)">使用该优惠券</el-button>
             </template>
           </el-table-column>

@@ -42,7 +42,7 @@
           </div>
           <el-table :data="companyTableData" border tooltip-effect="dark" style="width: 100%" :default-sort="{prop: 'createTime', order: 'descending'}" @selection-change="handleSelectionChange">
             <el-table-column type="expand">
-              <template scope="props">
+              <template slots-scope="props">
                 <el-form label-position="left" inline class="demo-table-expand">
                   <el-form-item label="门店品牌">
                     <span>{{ props.row.brand }}</span>
@@ -75,7 +75,7 @@
             <el-table-column align="center" prop="createTime" sortable label="创建时间" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" prop="updateTime" sortable label="更新时间" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" label="操作" width="200" v-if="userRole=='super_admin' || userRole=='company_admin'" >
-              <template scope="scope">
+              <template slots-scope="scope">
                 <el-button 
                   size="small" 
                   @click="handleEdit(scope.$index, scope.row)">编辑</el-button>

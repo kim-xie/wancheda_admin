@@ -77,8 +77,8 @@
       console.group('created 创建完毕状态=======login.vue========》');
       let component = this;
       document.onkeydown = function(){
-          component.show();
-      }    
+        component.show();
+      }
     },
     beforeMount: function () {
       console.group('beforeMount 挂载前状态=======login.vue========》');
@@ -116,9 +116,9 @@
           $("#remember-me").attr("checked",false)
         }
       },
-      show: function (ev) {
+      show(ev) {
         let _this = this
-        if(ev.keyCode == 13){
+        if(ev && ev.code == 'Enter'){
           _this.login()
         }
       },
@@ -129,7 +129,7 @@
         //alert(this.password)
         var hashPwd = CryptoJS.MD5(this.password).toString()
         //alert(username + "--" + hashPwd +"--"+remember_Me)
-        var params = {username:username,password:hashPwd}
+        var params = {username:username,password:hashPwd,credentials:true}
         if(username && hashPwd){
           //请求后端
           this.$http.get('/supercar/user/login',{params:params}).then((response) => {

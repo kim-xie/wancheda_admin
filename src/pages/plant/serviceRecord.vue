@@ -77,7 +77,7 @@
           </span>
           <el-table border :data="unpayTableData" highlight-current-row style="width: 100%" :default-sort = "{prop: 'sendTime', order: 'descending'}">
             <el-table-column type="expand" label="操作">
-              <template scope="props">
+              <template slots-scope="props">
                 <el-row>
                   <el-card class="box-card" :body-style="{ padding: '10px 20px' }" >
                     <div slot="header" class="clearfix">
@@ -141,13 +141,13 @@
             <el-table-column align="center" property="endTime" sortable width="180" label="预交车时间" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" property="sum" label="金额(元)" width="90"></el-table-column>
             <el-table-column align="center" property="workorderState" label="状态" width="90" show-overflow-tooltip>
-              <template scope="scope">
+              <template slots-scope="scope">
                 <el-tag size="middle" type="warning" v-if="scope.row.workorderState=='维修中'">{{scope.row.workorderState}}</el-tag>
                 <el-tag size="middle" type="success" v-if="scope.row.workorderState=='已结账'">{{scope.row.workorderState}}</el-tag>
               </template>
             </el-table-column>
             <el-table-column align="center" label="操作" width="180">
-              <template scope="scope">
+              <template slots-scope="scope">
                 <el-button size="small" type="success" v-if="scope.row.workorderState=='维修中'" @click="changeState(scope.$index, scope.row)">结账</el-button>
                 <el-button size="small" type="info" @click="loadMore(scope.$index, scope.row)">订单详情</el-button>
               </template>
@@ -169,7 +169,7 @@
           <span slot="label"><i class="el-icon-date"></i> 所有维修记录({{total}})</span>
           <el-table border :data="allItemTableData" highlight-current-row style="width: 100%" :default-sort = "{prop: 'sendTime', order: 'descending'}">
             <el-table-column type="expand" label="操作">
-              <template scope="props">
+              <template slots-scope="props">
                 <el-row>
                   <el-card class="box-card" :body-style="{ padding: '10px 20px' }" >
                     <div slot="header" class="clearfix">
@@ -233,13 +233,13 @@
             <el-table-column align="center" property="endTime" sortable width="180" label="预交车时间" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" property="sum" label="金额(元)" width="90"></el-table-column>
             <el-table-column align="center" property="workorderState" label="状态" width="90" show-overflow-tooltip>
-              <template scope="scope">
+              <template slots-scope="scope">
                 <el-tag size="middle" type="warning" v-if="scope.row.workorderState=='维修中'">{{scope.row.workorderState}}</el-tag>
                 <el-tag size="middle" type="success" v-if="scope.row.workorderState=='已结账'">{{scope.row.workorderState}}</el-tag>
               </template>
             </el-table-column>
             <el-table-column align="center" label="操作" width="180">
-              <template scope="scope">
+              <template slots-scope="scope">
                 <el-button size="small" type="success" v-if="scope.row.workorderState=='维修中'" @click="changeState(scope.$index, scope.row)">结账</el-button>
                 <el-button size="small" type="info" @click="loadMore(scope.$index, scope.row)">订单详情</el-button>
               </template>

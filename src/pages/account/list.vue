@@ -61,13 +61,13 @@
             <el-table-column align="center" prop="createTime" sortable width="180" label="创建时间" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" prop="updateTime" sortable width="180" label="更新时间" show-overflow-tooltip> </el-table-column>
             <el-table-column align="center" prop="isDisable" label="状态" width="80" show-overflow-tooltip>
-              <template scope="scope" >
+              <template slots-scope="scope" >
                 <el-tag v-if="scope.row.isDisable === false" size="small" type="success">启用</el-tag>
                 <el-tag v-if="scope.row.isDisable === true" size="small" type="warning">禁用</el-tag>
               </template>
             </el-table-column>
             <el-table-column align="center" label="操作" width="200" v-if="userRole=='super_admin' || userRole=='company_admin'">
-              <template scope="scope">
+              <template slots-scope="scope">
                 <el-button v-if="scope.row.isDisable === false" size="small" :plain="true" type="warning" @click="handleDisable(scope.$index, scope.row)">禁用</el-button>
                 <el-button v-if="scope.row.isDisable === true" size="small" :plain="true" type="success" @click="handleDisable(scope.$index, scope.row)">启用</el-button>
                 <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>

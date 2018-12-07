@@ -111,7 +111,7 @@
                 <el-table-column align="center" prop="carModel" label="适用车型" show-overflow-tooltip></el-table-column>
                 <!-- <el-table-column align="center" prop="createTime" sortable label="创建时间" show-overflow-tooltip> </el-table-column> -->
                 <el-table-column align="center" label="操作" show-overflow-tooltip>
-                  <template scope="scope">
+                  <template slots-scope="scope">
                     <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                     <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                   </template>

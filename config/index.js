@@ -29,7 +29,7 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/supercar': {
-        target: 'http://47.75.131.186:8080/supercar',
+        target: 'http://47.75.131.186:8080',
         changeOrigin: true,
         pathRewrite: {
           '^/supercar': '/supercar'
