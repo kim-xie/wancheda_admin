@@ -48,8 +48,7 @@
 		</div>
 
 		<div class="footer">
-			<p>kim技术分享平台</p>
-			<p>Designed By kim &amp; <a href="javascript:;">kimit.cn</a> 2017</p>
+			<p>Designed By kim &amp; <a href="https://www.kimshare.club" target="_blank">kimshare.club</a> 2017</p>
 		</div>
 
   </div>
@@ -129,7 +128,7 @@
         //alert(this.password)
         var hashPwd = CryptoJS.MD5(this.password).toString()
         //alert(username + "--" + hashPwd +"--"+remember_Me)
-        var params = {username:username,password:hashPwd,credentials:true}
+        var params = {username:username,password:hashPwd}
         if(username && hashPwd){
           //请求后端
           this.$http.get('/supercar/user/login',{params:params}).then((response) => {
