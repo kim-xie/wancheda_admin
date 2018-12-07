@@ -1,0 +1,157 @@
+{
+  "findAll": {
+    "success": "true",
+    "errorNo": 0,
+    "errorMsg": "成功",
+    "data": [
+        {
+            "accountId": "54000019800615189X",
+            "accountName": "姜磊鹏",
+            "password": "deqybz",
+            "mobile": "18102238898",
+            "email": "2238898@163.com",
+            "forbid": false,
+            "lastLoginTime": "2004-01-26 03:43:34",
+            "lastLoginIp": "250.115.169.187",
+            "roles": [
+                {
+                    "roleId": "130000197605182363",
+                    "name": "普通管理员",
+                    "description": "角色"
+                }
+            ],
+            "permissions": [
+                {
+                    "parentId": "540000199002255549",
+                    "permissionId": "450000199010168275",
+                    "parentName": "客户管理",
+                    "name": "删除",
+                    "parentUrl": "/client",
+                    "url": "/client/remove",
+                    "description": "客户管理/删除"
+                }
+            ],
+            "company": {
+                "companyId": "420000198404072399",
+                "name": "北京分店",
+                "code": "CKWNO",
+                "mobile": "18102238898",
+                "defaultCarNo": "粤A",
+                "brand": "辉门冠军",
+                "type": "快洗门店",
+                "serviceTime": "AM 10:09:48",
+                "email": "r.harris@williams.net",
+                "description": "分店",
+                "address": "北京"
+            }
+        },
+        {
+            "accountId": "46000020170218821X",
+            "accountName": "金瑞",
+            "password": "kwavtk",
+            "mobile": "13802770898",
+            "email": "2238898@163.com",
+            "forbid": false,
+            "lastLoginTime": "1997-05-12 21:18:17",
+            "lastLoginIp": "18.29.78.103",
+            "roles": [
+                {
+                    "roleId": "460000199510021191",
+                    "name": "超级管理员",
+                    "description": "角色"
+                }
+            ],
+            "permissions": [
+                {
+                    "parentId": "360000201402254664",
+                    "permissionId": "520000198302111282",
+                    "parentName": "客户管理",
+                    "name": "删除",
+                    "parentUrl": "/client",
+                    "url": "/client/remove",
+                    "description": "客户管理/删除"
+                },
+                {
+                    "parentId": "230000199007212932",
+                    "permissionId": "640000197708024325",
+                    "parentName": "车间管理",
+                    "name": "添加",
+                    "parentUrl": "/plant",
+                    "url": "/plant/add",
+                    "description": "车间管理/添加"
+                }
+            ],
+            "company": {
+                "companyId": "520000200310114360",
+                "name": "甘肃分店",
+                "code": "FKSJO",
+                "mobile": "18102238898",
+                "defaultCarNo": "粤A",
+                "brand": "欧美冠军",
+                "type": "快洗门店",
+                "serviceTime": "PM 22:43:27",
+                "email": "e.wilson@williams.gov",
+                "description": "分店",
+                "address": "甘肃"
+            }
+        }
+    ]
+  },
+
+  "findByNameAndPwd": {
+    "success": "true",
+    "errorNo": 0,
+    "errorMsg": "成功",
+    "data": {
+        "accountId": "710000197009251180",
+        "accountName": "曹婷茜",
+        "password": "ksluss",
+        "mobile": "18302778898",
+        "email": "2238898@163.com",
+        "forbid": false,
+        "lastLoginTime": "2007-04-22 16:21:02",
+        "lastLoginIp": "212.61.235.157",
+        "roles": [
+            {
+                "roleId": "420000201105053248",
+                "name": "普通管理员",
+                "description": "角色"
+            }
+        ],
+        "permissions": [
+            {
+                "parentId": "11000020130719795X",
+                "permissionId": "350000198905093296",
+                "parentName": "客户管理",
+                "name": "删除",
+                "parentUrl": "/client",
+                "url": "/client/remove",
+                "description": "客户管理/删除"
+            },
+            {
+                "parentId": "510000200206273431",
+                "permissionId": "340000198706091376",
+                "parentName": "财务管理",
+                "name": "修改",
+                "parentUrl": "/financial",
+                "url": "/financial/edit",
+                "description": "财务管理/修改"
+            }
+        ],
+        "company": {
+            "companyId": "360000201209283922",
+            "name": "北京分店",
+            "code": "LGLZU",
+            "mobile": "18802778898",
+            "defaultCarNo": "粤B",
+            "brand": "鼎泰冠军",
+            "type": "快修门店",
+            "serviceTime": "PM 16:58:51",
+            "email": "w.lewis@lewis.net",
+            "description": "分店",
+            "address": "北京"
+        }
+    }
+
+  }
+}

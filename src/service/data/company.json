@@ -1,0 +1,28 @@
+/**
+ * companyId     -- 分店ID
+ * name          -- 分店名称
+ * code          -- 分店代码
+ * mobile        -- 热线电话
+ * defaultCarNo  -- 默认车牌号
+ * brand         -- 品牌
+ * type          -- 分店类型
+ * serviceTime   -- 营业时间
+ * email         -- 分店邮箱
+ * address       -- 分店地址
+ * description   -- 分店描述
+ * [company description]
+ * @type {Object}
+ */
+company: {
+    "companyId": "360000201209283922",
+    "name": "北京分店",
+    "code": "LGLZU",
+    "mobile": "18802778898",
+    "defaultCarNo": "粤B",
+    "brand": "鼎泰冠军",
+    "type": "快修门店",
+    "serviceTime": "PM 16:58:51",
+    "email": "w.lewis@lewis.net",
+    "description": "分店",
+    "address": "北京"
+}

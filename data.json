@@ -1,0 +1,447 @@
+{
+  "findAllAccounts": {
+    "success": "true",
+    "errorNo": 0,
+    "errorMsg": "成功",
+    "data": [
+        {
+            "accountId": "54000019800615189X",
+            "accountName": "姜磊鹏",
+            "password": "deqybz",
+            "mobile": "18102238898",
+            "email": "2238898@163.com",
+            "forbid": false,
+            "lastLoginTime": "2004-01-26 03:43:34",
+            "lastLoginIp": "250.115.169.187",
+            "loginTimes": "100",
+            "description": "备注",
+            "createTime": "2012-02-24 15:56:38",
+            "updateTime": "2017-02-17 07:48:01",
+            "isDelete": false,
+            "roles": [
+                {
+                    "roleId": "130000197605182363",
+                    "name": "普通管理员",
+                    "description": "角色"
+                }
+            ],
+            "permissions": [
+                {
+                    "parentId": "540000199002255549",
+                    "permissionId": "450000199010168275",
+                    "parentName": "客户管理",
+                    "name": "删除",
+                    "parentUrl": "/client",
+                    "url": "/client/remove",
+                    "description": "客户管理/删除"
+                }
+            ],
+            "company": {
+                "companyId": "420000198404072399",
+                "name": "北京分店",
+                "code": "CKWNO",
+                "mobile": "18102238898",
+                "defaultCarNo": "粤A",
+                "brand": "辉门冠军",
+                "type": "快洗门店",
+                "serviceTime": "AM 10:09:48",
+                "email": "r.harris@williams.net",
+                "description": "分店",
+                "address": "北京"
+            }
+        },
+        {
+            "accountId": "46000020170218821X",
+            "accountName": "金瑞",
+            "password": "kwavtk",
+            "mobile": "13802770898",
+            "email": "2238898@163.com",
+            "forbid": false,
+            "lastLoginTime": "1997-05-12 21:18:17",
+            "lastLoginIp": "18.29.78.103",
+            "loginTimes": "10",
+            "description": "备注",
+            "createTime": "2012-02-24 15:56:38",
+            "updateTime": "2017-02-17 07:48:01",
+            "isDelete": false,
+            "roles": [
+                {
+                    "roleId": "460000199510021191",
+                    "name": "超级管理员",
+                    "description": "角色"
+                }
+            ],
+            "permissions": [
+                {
+                    "parentId": "360000201402254664",
+                    "permissionId": "520000198302111282",
+                    "parentName": "客户管理",
+                    "name": "删除",
+                    "parentUrl": "/client",
+                    "url": "/client/remove",
+                    "description": "客户管理/删除"
+                },
+                {
+                    "parentId": "230000199007212932",
+                    "permissionId": "640000197708024325",
+                    "parentName": "车间管理",
+                    "name": "添加",
+                    "parentUrl": "/plant",
+                    "url": "/plant/add",
+                    "description": "车间管理/添加"
+                }
+            ],
+            "company": {
+                "companyId": "520000200310114360",
+                "name": "甘肃分店",
+                "code": "FKSJO",
+                "mobile": "18102238898",
+                "defaultCarNo": "粤A",
+                "brand": "欧美冠军",
+                "type": "快洗门店",
+                "serviceTime": "PM 22:43:27",
+                "email": "e.wilson@williams.gov",
+                "description": "分店",
+                "address": "甘肃"
+            }
+        }
+    ]
+  },
+
+  "findByNameAndPwd": {
+    "success": "true",
+    "errorNo": 0,
+    "errorMsg": "成功",
+    "data": {
+      "accountId": "710000197009251180",
+      "accountName": "曹婷茜",
+      "password": "ksluss",
+      "mobile": "18302778898",
+      "email": "2238898@163.com",
+      "forbid": false,
+      "lastLoginTime": "2007-04-22 16:21:02",
+      "lastLoginIp": "212.61.235.157",
+      "loginTimes": "109",
+      "description": "备注",
+      "createTime": "2012-02-24 15:56:38",
+      "updateTime": "2017-02-17 07:48:01",
+      "isDelete": false,
+      "roles": [
+          {
+              "roleId": "420000201105053248",
+              "name": "普通管理员",
+              "description": "角色"
+          }
+      ],
+      "permissions": [
+          {
+              "parentId": "11000020130719795X",
+              "permissionId": "350000198905093296",
+              "parentName": "客户管理",
+              "name": "删除",
+              "parentUrl": "/client",
+              "url": "/client/remove",
+              "description": "客户管理/删除"
+          },
+          {
+              "parentId": "510000200206273431",
+              "permissionId": "340000198706091376",
+              "parentName": "财务管理",
+              "name": "修改",
+              "parentUrl": "/financial",
+              "url": "/financial/edit",
+              "description": "财务管理/修改"
+          }
+      ],
+      "company": {
+          "companyId": "360000201209283922",
+          "name": "北京分店",
+          "code": "LGLZU",
+          "mobile": "18802778898",
+          "defaultCarNo": "粤B",
+          "brand": "鼎泰冠军",
+          "type": "快修门店",
+          "serviceTime": "PM 16:58:51",
+          "email": "w.lewis@lewis.net",
+          "description": "分店",
+          "address": "北京"
+      }
+    }
+  },
+
+  "clients": {
+    "success": "true",
+    "errorNo": 0,
+    "errorMsg": "成功",
+    "data": [
+      {
+          "clientId": "460000198509289567",
+          "clientName": "蒋政岩",
+          "clientSex": "女",
+          "clientMobile": "18302778898",
+          "clientEmail": "1830277@qq.com",
+          "clientType": "单位",
+          "clientAddress": "北京",
+          "clientGrade": {
+            "gradeId": "340000197112177784",
+            "gradeName": "超级客户",
+            "gradeCode": "code2",
+            "discount": "九折",
+            "description": "备注",
+            "createTime": "1987-07-22 04:35:40",
+            "updateTime": "1993-01-11 18:57:41",
+            "isDelete": false
+          },
+          "car": {
+            "carId": "42000020000929280X",
+            "carNo": "粤BNB5201",
+            "carBrand": "奔驰",
+            "carType": "A4",
+            "carColor": "黑色",
+            "carVIN": "440000201309295250",
+            "engineNo": "500000197210104220",
+            "registrationDate": "1973-02-02 13:20:11",
+            "trafficDate": "1980-04-20 23:34:59",
+            "commercialDate": "1976-03-11 11:58:43",
+            "acceptance": "太平洋保险公司",
+            "sendMan": "许桂",
+            "sendManMobile": "18102238898",
+            "gasoline": "满",
+            "mileage": "1234km",
+            "comeDate": "1983-11-11 19:07:46",
+            "leaveDate": "1983-06-23 09:49:29",
+            "description": "备注",
+            "createTime": "1995-12-25 14:09:34",
+            "updateTime": "1991-06-04 07:06:24",
+            "isDelete": false
+          },
+          "description": "描述",
+          "createTime": "1994-12-13 14:16:12",
+          "updateTime": "1970-02-03 04:48:21",
+          "isDelete": false
+      },
+      {
+          "clientId": "360000199505037742",
+          "clientName": "水生桂",
+          "clientSex": "女",
+          "clientMobile": "18102238898",
+          "clientEmail": "1380898@162.com",
+          "clientType": "个人",
+          "clientAddress": "甘肃",
+          "clientGrade": {
+            "gradeId": "340000197112177784",
+            "gradeName": "超级客户",
+            "gradeCode": "code2",
+            "discount": "九折",
+            "description": "备注",
+            "createTime": "1987-07-22 04:35:40",
+            "updateTime": "1993-01-11 18:57:41",
+            "isDelete": false
+          },
+          "car": {
+            "carId": "42000020000929280X",
+            "carNo": "粤BNB5201",
+            "carBrand": "奔驰",
+            "carType": "A4",
+            "carColor": "黑色",
+            "carVIN": "440000201309295250",
+            "engineNo": "500000197210104220",
+            "registrationDate": "1973-02-02 13:20:11",
+            "trafficDate": "1980-04-20 23:34:59",
+            "commercialDate": "1976-03-11 11:58:43",
+            "acceptance": "太平洋保险公司",
+            "sendMan": "许桂",
+            "sendManMobile": "18102238898",
+            "gasoline": "满",
+            "mileage": "1234km",
+            "comeDate": "1983-11-11 19:07:46",
+            "leaveDate": "1983-06-23 09:49:29",
+            "description": "备注",
+            "createTime": "1995-12-25 14:09:34",
+            "updateTime": "1991-06-04 07:06:24",
+            "isDelete": false
+          },
+          "description": "备注",
+          "createTime": "2000-01-11 11:17:22",
+          "updateTime": "1970-07-25 19:05:02",
+          "isDelete": false
+      }
+    ]
+  },
+
+  "clientGrades": {
+    "data": [
+      {
+        "gradeId": "340000197112177784",
+        "gradeName": "超级客户",
+        "gradeCode": "code1",
+        "serviceDiscount": "九折",
+        "productDiscount": "八折",
+        "description": "备注",
+        "createTime": "1987-07-02 04:35:40",
+        "updateTime": "1993-01-11 18:57:41",
+        "isDelete": false
+      },
+      {
+        "gradeId": "340000197112177785",
+        "gradeName": "金牌客户",
+        "gradeCode": "code2",
+        "serviceDiscount": "八折",
+        "productDiscount": "八折",
+        "description": "备注",
+        "createTime": "1987-07-10 04:35:40",
+        "updateTime": "1993-01-11 18:57:41",
+        "isDelete": false
+      },
+      {
+        "gradeId": "340000197112177786",
+        "gradeName": "银牌客户",
+        "gradeCode": "code3",
+        "serviceDiscount": "八折",
+        "productDiscount": "六折",
+        "description": "备注",
+        "createTime": "1987-07-20 04:35:40",
+        "updateTime": "1993-01-11 18:57:41",
+        "isDelete": false
+      },
+      {
+        "gradeId": "340000197112177787",
+        "gradeName": "普通客户",
+        "gradeCode": "code4",
+        "serviceDiscount": "八折",
+        "productDiscount": "八折",
+        "description": "备注",
+        "createTime": "1987-07-12 04:35:40",
+        "updateTime": "1993-01-11 18:57:41",
+        "isDelete": false
+      }
+    ]
+  },
+
+  "car": {
+    "carId": "42000020000929280X",
+    "carNo": "粤BNB5201",
+    "carBrand": "奔驰",
+    "carType": "A4",
+    "carColor": "黑色",
+    "carVIN": "440000201309295250",
+    "engineNo": "500000197210104220",
+    "registrationDate": "1973-02-02 13:20:11",
+    "trafficDate": "1980-04-20 23:34:59",
+    "commercialDate": "1976-03-11 11:58:43",
+    "acceptance": "太平洋保险公司",
+    "sendMan": "许桂",
+    "sendManMobile": "18102238898",
+    "gasoline": "满",
+    "mileage": "1234km",
+    "comeDate": "1983-11-11 19:07:46",
+    "leaveDate": "1983-06-23 09:49:29",
+    "description": "备注",
+    "createTime": "1995-12-25 14:09:34",
+    "updateTime": "1991-06-04 07:06:24",
+    "isDelete": false
+  },
+
+  "serviceProject": {
+    "serviceId": "520000197901157632",
+    "serviceName": "机油更换",
+    "parentId": "330000200902223442",
+    "parentName": "机油",
+    "price": "￥300",
+    "unit": "次",
+    "count": 2,
+    "technicianId": "810000201110068156",
+    "salesmanId": "610000198112213626",
+    "description": "备注",
+    "createTime": "2002-06-03 17:52:52",
+    "updateTime": "1988-12-12 09:38:45",
+    "isDelete": false
+  },
+
+  "production": {
+    "productId": "350000199503166960",
+    "productName": "美孚机油",
+    "parentId": "110000199105245415",
+    "parentName": "机油",
+    "price": "￥200",
+    "unit": "瓶",
+    "count": 1,
+    "operator": "方昌璐",
+    "salesmanId": "460000199708218758",
+    "description": "描述",
+    "createTime": "1975-07-24 05:54:14",
+    "updateTime": "1970-10-28 07:14:05",
+    "isDelete": false
+  },
+
+  "technician": {
+    "technicianId": "650000197108217758",
+    "technicianName": "秦彪进",
+    "description": "描述",
+    "createTime": "2008-01-21 10:54:10",
+    "updateTime": "2015-10-07 12:24:18",
+    "isDelete": true
+  },
+
+  "salesman": {
+    "salesmanId": "440000201701256037",
+    "salesmanName": "曹磊茜",
+    "description": "备注",
+    "createTime": "1980-03-16 20:02:02",
+    "updateTime": "1983-03-03 10:38:02",
+    "isDelete": false
+  },
+
+  "serviceItemClassify": {
+    "success": true,
+    "errorNo": 0,
+    "errorMsg": "成功",
+    "data": [
+      {
+        "serviceItemId": "340000197112177784",
+        "serviceName": "奥迪A4L轮胎更换",
+        "bigService": "汽车保养",
+        "smallService": "轮胎更换",
+        "servicePrice": "500",
+        "description": "备注",
+        "createTime": "1981-07-02 04:35:40",
+        "updateTime": "1996-01-11 18:57:41",
+        "isDelete": false
+      },
+      {
+        "serviceItemId": "340000197112177785",
+        "serviceName": "宝马轮胎更换",
+        "bigService": "汽车保养",
+        "smallService": "轮胎更换",
+        "servicePrice": "800",
+        "description": "备注",
+        "createTime": "1987-09-02 04:35:40",
+        "updateTime": "1993-08-19 13:57:41",
+        "isDelete": false
+      },
+      {
+        "serviceItemId": "340000197112177786",
+        "serviceName": "宝马外表精洗",
+        "bigService": "汽车美容",
+        "smallService": "汽车精洗",
+        "servicePrice": "200",
+        "description": "备注",
+        "createTime": "1989-09-02 08:31:40",
+        "updateTime": "1999-02-19 18:57:40",
+        "isDelete": false
+      },
+      {
+        "serviceItemId": "340000197112177787",
+        "serviceName": "奥迪A4L机油更换",
+        "bigService": "汽车保养",
+        "smallService": "机油更换",
+        "servicePrice": "300",
+        "description": "备注",
+        "createTime": "1983-07-02 04:35:40",
+        "updateTime": "1994-01-11 18:57:41",
+        "isDelete": false
+      }
+    ]
+  }
+
+}
