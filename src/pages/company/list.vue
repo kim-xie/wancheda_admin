@@ -42,7 +42,7 @@
           </div>
           <el-table :data="companyTableData" border tooltip-effect="dark" style="width: 100%" :default-sort="{prop: 'createTime', order: 'descending'}" @selection-change="handleSelectionChange">
             <el-table-column type="expand">
-              <template slots-scope="props">
+              <template scope="props">
                 <el-form label-position="left" inline class="demo-table-expand">
                   <el-form-item label="门店品牌">
                     <span>{{ props.row.brand }}</span>
@@ -162,8 +162,6 @@
         </div>
       </el-dialog>
     </div>
-    
-
   </div>
 </template>
 
@@ -237,7 +235,7 @@ export default {
     goSearch() {
       if(this.userRole == 'super_admin'){
         this.usercompany = this.search.company
-      } 
+      }
       if(this.search.name || this.search.code || this.search.address || this.search.company){
         this.serachData()
       }else{
@@ -465,7 +463,7 @@ export default {
 }
 
 .searchBox .searchTitle {
-  display: inline-block;
+  display: block;
   min-width: 60px;
   width: 16%;
   height: 36px;

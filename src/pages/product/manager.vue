@@ -75,7 +75,7 @@
                 <el-table-column align="center" prop="carModel" label="适用车型" show-overflow-tooltip></el-table-column>
                 <el-table-column align="center" prop="repCodeLKVal" label="库位号" show-overflow-tooltip></el-table-column>
                 <el-table-column align="center" label="操作" show-overflow-tooltip>
-                  <template slots-scope="scope">
+                  <template scope="scope">
                     <el-button 
                       v-if = "scope.row.mark != 1"
                       size="small" 

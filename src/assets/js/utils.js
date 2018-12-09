@@ -121,7 +121,7 @@ export const getDataFormLUP = (lookupDefineCode, callback) => {
     }
   }).then((response) => {
     //alert(JSON.stringify(response.body.data.entitys))
-    if(callback) {
+    if (callback && typeof callback == 'function' && response.body.data.page) {
       callback.call(response.body.data.page.content)
     }
     //return response.body.data.entitys
@@ -141,7 +141,7 @@ export const getDataFormLUP = (lookupDefineCode, callback) => {
 export const getDataFormLUPById = (lookupId, callback) => {
   Vue.http.get('/supercar/lookup/getById', {params: {id: lookupId}}).then((response) => {
     //alert(JSON.stringify(response.body.data.entitys))
-    if(callback) {
+    if (callback && typeof callback == 'function' && response.body.data) {
       callback.call(response.body.data.entity)
     }
     //return response.body.data.entitys
@@ -161,7 +161,7 @@ export const getDataFormLUPById = (lookupId, callback) => {
 export const getDataById = (obj, id, callback) => {
   Vue.http.get('/supercar/'+obj+'/getById', {params: {id: id}}).then((response) => {
     //alert(JSON.stringify(response.body.data.entitys))
-    if(callback) {
+    if (callback && typeof callback == 'function' && response.body.data) {
       callback.call(response.body.data.entity)
     }
     //return response.body.data.entitys

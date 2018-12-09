@@ -12,7 +12,7 @@
           <el-col :span="24">
             <el-breadcrumb separator="/">
               <el-breadcrumb-item :to="{ path: '/index' }">
-                <i class="icon-home" style="margin-right:5px;color:#20a0ff;"></i> 
+                <i class="icon-home" style="margin-right:5px;color:#20a0ff;"></i>
                 <span style="color:#20a0ff;">系统首页</span>
               </el-breadcrumb-item>
               <el-breadcrumb-item>{{$route.name}}</el-breadcrumb-item>

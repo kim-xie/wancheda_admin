@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-  	<nav class="navbar navbar-default">
+  	<div class="navbar navbar-default">
   	  <div class="container-fluid">
   	    <div class="navbar-header">
   	      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -32,13 +32,13 @@
   	      </ul>
   	    </div>
   	  </div>
-  	</nav>
+  	</div>
   </div>
 </template>
 <script>
   import {setStore, getStore, removeStore} from '@/assets/js/utils'
   export default {
-    name: 'header',
+    name: 'navheader',
     data() {
       return {
         message: 'header页面数据',
