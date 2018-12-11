@@ -50,7 +50,7 @@
             <el-table-column align="center" prop="code" label="代码" show-overflow-tooltip></el-table-column>
             <el-table-column v-if="lookupDfName == '客户级别'" align="center" prop="additional" label="折扣" show-overflow-tooltip></el-table-column>
             <el-table-column v-if="lookupDfType == 1" align="center" prop="zzIsLeaf" label="父节点">
-              <template slots-scope="scope">
+              <template scope="scope">
                 <el-tag v-if="scope.row.zzIsLeaf == false || scope.row.zzIsLeaf == undefined" :type="scope.row.zzIsLeaf != true ? 'success' : 'primary'" close-transition>
                   是
                 </el-tag>
@@ -61,7 +61,7 @@
             </el-table-column>
             <el-table-column align="center" prop="description" label="描述" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" label="操作" show-overflow-tooltip>
-              <template slots-scope="scope">
+              <template scope="scope">
                 <el-button size="small" icon="edit" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                 <el-button size="small" icon="delete" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
               </template>
