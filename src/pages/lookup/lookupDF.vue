@@ -45,7 +45,7 @@
             <el-table-column align="center" prop="createTime" sortable label="创建时间" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" prop="updateTime" sortable label="更新时间" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" label="操作" show-overflow-tooltip>
-              <template slots-scope="scope">
+              <template scope="scope">
                 <el-button size="small" icon="edit" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
                 <el-button size="small" icon="delete" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
               </template>
