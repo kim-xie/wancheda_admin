@@ -1101,19 +1101,19 @@ export default {
     billing(formName){
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          if(this.repairItemTableDatas.length < 1){
+          if(this.clientTableData.length < 1){
             this.$message({
               type: 'warning',
-              message: '请添加维修项目！',
+              message: '请添加客户信息！',
               duration: 2000,
               showClose: true
             })
             return;
           }
-          if(this.clientTableData.length < 1){
+          if(this.repairItemTableDatas.length < 1){
             this.$message({
               type: 'warning',
-              message: '请添加客户信息！',
+              message: '请添加维修项目！',
               duration: 2000,
               showClose: true
             })

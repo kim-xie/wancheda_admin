@@ -72,10 +72,10 @@
     <el-row>
       <el-tabs type="border-card">
         <el-tab-pane>
-          <span slot="label"><i class="el-icon-star-off"></i> 
+          <span slot="label"><i class="el-icon-star-off"></i>
           待结账({{unpayTotal}})<el-badge class="mark" :value="this.$store.state.repairItemCount"/>
           </span>
-          <el-table border :data="unpayTableData" highlight-current-row style="width: 100%" :default-sort = "{prop: 'sendTime', order: 'descending'}">
+          <el-table border :data="unpayTableData" @expand="expandRow" highlight-current-row style="width: 100%" :default-sort = "{prop: 'sendTime', order: 'descending'}">
             <el-table-column type="expand" label="操作">
               <template scope="props">
                 <el-row>
@@ -88,7 +88,7 @@
                       <div class="billingTitle">
                         <p class="billingCompany">
                           <span class="titleLabel">维修门店:</span>
-                          <span class="titleVal">{{repairCompany}}</span>
+                          <span class="titleVal">{{props.row.date.company.name}}</span><!-- repairCompany -->
                         </p>
                         <p class="billingOrderNo">
                           <span class="titleLabel">订单号:</span>
@@ -167,8 +167,8 @@
         </el-tab-pane>
         <el-tab-pane>
           <span slot="label"><i class="el-icon-date"></i> 所有维修记录({{total}})</span>
-          <el-table border :data="allItemTableData" highlight-current-row style="width: 100%" :default-sort = "{prop: 'sendTime', order: 'descending'}">
-            <el-table-column type="expand" label="操作">
+          <el-table border :data="allItemTableData" @expand="expandRow" highlight-current-row style="width: 100%" :default-sort = "{prop: 'sendTime', order: 'descending'}">
+            <el-table-column type="expand" label="操作" >
               <template scope="props">
                 <el-row>
                   <el-card class="box-card" :body-style="{ padding: '10px 20px' }" >
@@ -180,7 +180,7 @@
                       <div class="billingTitle">
                         <p class="billingCompany">
                           <span class="titleLabel">维修门店:</span>
-                          <span class="titleVal">{{repairCompany}}</span>
+                          <span class="titleVal">{{props.row.date.company.name}}</span>
                         </p>
                         <p class="billingOrderNo">
                           <span class="titleLabel">订单号:</span>
@@ -288,7 +288,8 @@ export default {
       unpayPageSize: 10,
       unpayTotal: 0,
       companys: {},
-      workType: {}
+      workType: {},
+      is_expend: false
     }
   },
   mounted() {
@@ -310,7 +311,7 @@ export default {
     loadAllData(pageNo,pageSize) {
       if(this.userRole == 'super_admin'){
         this.usercompany = ''
-      } 
+      }
       this.$http.get('/supercar/repairWorkorder/page',{
         params:{
           'search.company_eq': this.usercompany,
@@ -332,7 +333,7 @@ export default {
     loadUnpayData(pageNo,pageSize) {
       if(this.userRole == 'super_admin'){
         this.usercompany = ''
-      } 
+      }
       this.$http.get('/supercar/repairWorkorder/page',{
         params:{
           'search.company_eq': this.usercompany,
@@ -355,7 +356,7 @@ export default {
     goSearch() {
       if(this.userRole == 'super_admin'){
         this.usercompany = this.search.company
-      } 
+      }
       if(this.search.workorderNo || this.search.carNo || this.search.repairTypeLK || this.search.clientName || this.search.company){
         this.searchData()
       }else{
@@ -381,7 +382,7 @@ export default {
     searchData(){
       if(this.userRole == 'super_admin'){
         this.usercompany = this.search.company
-      } 
+      }
       let clientId = []
       if(this.search.carNo || this.search.clientName){
         this.$http.get('/supercar/client/page',{
@@ -410,7 +411,7 @@ export default {
             params: params
           }).then((response) => {
             if($(".el-tabs__item.is-active").text().indexOf('待结账') != -1){
-             this.unpayTableData = response.body.data.page.content
+              this.unpayTableData = response.body.data.page.content
               this.unpayTotal = response.body.data.page.totalElements
             }else{
               this.allItemTableData = response.body.data.page.content
@@ -447,7 +448,7 @@ export default {
           params: params
         }).then((response) => {
           if($(".el-tabs__item.is-active").text().indexOf('待结账') != -1){
-           this.unpayTableData = response.body.data.page.content
+            this.unpayTableData = response.body.data.page.content
             this.unpayTotal = response.body.data.page.totalElements
           }else{
             this.allItemTableData = response.body.data.page.content
@@ -463,40 +464,69 @@ export default {
         })
       }
     },
-     getCompanys() {
+    getCompanys() {
       this.$http.get('/supercar/company/page?search.isDeleted_eq=false&page.pn=1&page.size=1000').then((response) => {
         this.companys = response.body.data.page.content
       })
     },
     changeState(index, row){
-      var editFormObj = {
-        "repairWorkorder": {
-          "id": row.id,
-          "workorderState": '已结账',//工单状态
+      this.$confirm('确认收到账款了吗？此操作后将无法撤销, 是否继续?', '温馨提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        var editFormObj = {
+          "repairWorkorder": {
+            "id": row.id,
+            "workorderState": '已结账',//工单状态
+          }
         }
-      }
-      this.$http.post('/supercar/repairWorkorder/editRepairWorkOrder', editFormObj).then((response) => {
-        if(response.body.success){
+        this.$http.post('/supercar/repairWorkorder/editRepairWorkOrder', editFormObj).then((response) => {
+          if(response.body.success){
+            this.$message({
+              type: 'success',
+              message: '结账成功！',
+              duration: 3000,
+              showClose: true
+            })
+            this.loadAllData(this.pageNo, this.pageSize)
+            this.loadUnpayData(this.unpayPageNo,this.unpayPageSize)
+          }
+        }, response => {
           this.$message({
-            type: 'success',
-            message: '结账成功！',
-            duration: 3000,
+            type: 'error',
+            message: '网络连接失败，请重试！',
+            duration: 2000,
             showClose: true
           })
-          this.loadAllData(this.pageNo, this.pageSize)
-          this.loadUnpayData(this.unpayPageNo,this.unpayPageSize)
-        }
-      }, response => {
+        })
+      }).catch(() => {
         this.$message({
-          type: 'error',
-          message: '网络连接失败，请重试！',
-          duration: 2000,
+          type: 'info',
+          message: '您已取消删除',
+          duration: 3000,
           showClose: true
         })
       })
     },
+    expandRow(row, expanded){
+      if(expanded){
+        this.getDetail(row)
+      }
+    },
     loadMore(index, row){
       //alert(row.workorderNo)
+      if(this.is_expend){
+        $(".el-tab-pane[style='']").find(".el-table__expand-icon").eq(index).trigger("click")
+        this.is_expend = false
+      }else{
+        this.getDetail(row, function(){
+          $(".el-tab-pane[style='']").find(".el-table__expand-icon").eq(index).trigger("click")
+          this.is_expend = true
+        })
+      }
+    },
+    getDetail(row, callback){
       this.$http.get('/supercar/repairWorkorder/getItemsAndParts',{
         params: {
           'repairWorkOrderNo': row.workorderNo,
@@ -517,10 +547,12 @@ export default {
           let outPartInfos = response.body.data.outPartComposite.outPartInfos
           let partExtendInfo = response.body.extendInfo.partId
           for(var i=0;i<outPartInfos.length;i++){
-            _this.outpartDetails[i].partName = partExtendInfo[outPartInfos[i].date.inventoryId.partId].name 
+            _this.outpartDetails[i].partName = partExtendInfo[outPartInfos[i].date.inventoryId.partId].name
           }
         }
-        $(".el-tab-pane[style='']").find(".el-table__expand-icon").eq(index).trigger("click") 
+        if(callback && typeof callback == 'function'){
+          callback()
+        }
       }, response => {
         this.$message({
           type: 'error',

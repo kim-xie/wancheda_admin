@@ -58,7 +58,7 @@
                 <el-table-column align="center" type="selection" width="55"> </el-table-column>
                 <el-table-column align="center" prop="code" label="项目代码" show-overflow-tooltip></el-table-column>
                 <el-table-column align="center" prop="name" label="项目名称" show-overflow-tooltip></el-table-column>
-                <el-table-column align="center" prop="workHour" label="数量" width="80"></el-table-column>
+                <el-table-column align="center" prop="workHour" label="数量/工时"></el-table-column>
                 <el-table-column align="center" prop="sum" label="单价" width="80"></el-table-column>
                 <el-table-column align="center" prop="date.workTypeLK.value" label="工种" width="80"></el-table-column>
                 <el-table-column align="center" prop="description" label="备注" show-overflow-tooltip></el-table-column>
@@ -119,12 +119,12 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="数量" :label-width="formLabelWidth" prop="workHour">
-          <el-input placeholder="请输入数量" v-model="repairItemForm.workHour">
+        <el-form-item label="数量/工时" :label-width="formLabelWidth" prop="workHour">
+          <el-input placeholder="请输入数量/工时" type="number" v-model="repairItemForm.workHour">
           </el-input>
         </el-form-item>
         <el-form-item label="单价" :label-width="formLabelWidth" prop="sum">
-          <el-input placeholder="单价" v-model="repairItemForm.sum">
+          <el-input placeholder="单价" type="number" v-model="repairItemForm.sum">
             <template slot="append">元</template>
           </el-input>
         </el-form-item>
