@@ -511,7 +511,10 @@ export default {
     },
     expandRow(row, expanded){
       if(expanded){
+        this.is_expend = true
         this.getDetail(row)
+      }else{
+        this.is_expend = false
       }
     },
     loadMore(index, row){
