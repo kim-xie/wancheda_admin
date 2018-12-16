@@ -192,6 +192,25 @@ export const checkPrice = (rule, value, callback) => {
   }, 0)
 }
 /**
+ * 数量和工时校验
+ * @param {*} rule
+ * @param {*} value
+ * @param {*} callback
+ */
+export const checkWorkHour = (rule, value, callback) => {
+  if (!value) {
+    return callback(new Error('数量/工时不能为空'))
+  }
+  setTimeout(() => {
+    var reg = /^[+]{0,1}(\d+)$|^[+]{0,1}(\d+\.\d+)$/
+    if (!reg.test(value)) {
+      callback(new Error('数量/工时必须是为非负数'))
+    } else {
+      callback()
+    }
+  }, 0)
+}
+/**
  * [checkDiscount description]
  * @method checkDiscount
  * @param  {[type]}      rule     [description]

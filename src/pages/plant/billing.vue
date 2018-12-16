@@ -140,7 +140,7 @@
             <el-table-column align="center" prop="name" label="维修项目" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" prop="sum" label="单价(元)"></el-table-column>
             <el-table-column align="center" prop="discount" label="折扣"></el-table-column>
-            <el-table-column align="center" prop="workHour" label="数量"></el-table-column>
+            <el-table-column align="center" prop="workHour" label="数量/工时"></el-table-column>
             <el-table-column align="center" prop="subtotal" label="小计(元)"></el-table-column>
             <el-table-column align="center" prop="mechanicVal" label="技师" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" prop="description" label="备注" show-overflow-tooltip></el-table-column>
@@ -255,7 +255,7 @@
             v-for="item in clientType"
             :key="item.id"
             :label="item.id"
-            :value="item.value"
+            :value="item.id"
             class="radio" >{{ item.value }}</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -317,7 +317,7 @@
           <el-table :data="repairItemTableData" border tooltip-effect="dark" style="width: 100%">
             <el-table-column align="center" prop="code" label="项目代码" width="100" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" prop="name" label="项目名称" show-overflow-tooltip></el-table-column>
-            <el-table-column align="center" prop="workHour" label="数量" width="80"></el-table-column>
+            <el-table-column align="center" prop="workHour" label="数量/工时"></el-table-column>
             <el-table-column align="center" prop="sum" label="金额" width="70"></el-table-column>
             <el-table-column align="center" prop="date.workTypeLK.value" label="工种" width="70"></el-table-column>
             <el-table-column align="center" prop="description" label="备注" show-overflow-tooltip></el-table-column>
@@ -347,14 +347,14 @@
 
     <!-- 维修项目信息 -->
     <el-dialog title="维修项目信息" :visible.sync="showRepairForm" class="repairItemForm" >
-      <el-form :model="repairItemForm" ref="repairItemForm" :rules="rules">
+      <el-form :model="repairItemForm" ref="repairItemForm" :rules="repairItemFormRules">
         <el-form-item label="维修单价" :label-width="formLabelWidth" prop="sum" style="width:100%;">
-          <el-input v-model="repairItemForm.sum" placeholder="维修单价">
+          <el-input type="number" v-model="repairItemForm.sum" placeholder="维修单价">
             <template slot="append">元</template>
           </el-input>
         </el-form-item>
-        <el-form-item label="数量" :label-width="formLabelWidth" prop="workHour" style="width:100%;">
-          <el-input v-model="repairItemForm.workHour" placeholder="请输入维修数量"></el-input>
+        <el-form-item label="数量/工时" :label-width="formLabelWidth" prop="workHour" style="width:100%;">
+          <el-input type="number" v-model="repairItemForm.workHour" placeholder="请输入维修数量/工时"></el-input>
         </el-form-item>
         <el-form-item label="维修工" :label-width="formLabelWidth" prop="mechanic" style="width:100%;">
           <el-select v-model="repairItemForm.mechanic" placeholder="请选择维修工">
@@ -451,11 +451,11 @@
     <!-- 客户优惠券列表 -->
     <el-dialog title="客户优惠券列表" :visible.sync="showCouponList" >
       <el-row>
-        <el-table 
-          :data="clientCouponTableData" 
+        <el-table
+          :data="clientCouponTableData"
           highlight-current-row
-          border 
-          tooltip-effect="dark" 
+          border
+          tooltip-effect="dark"
           style="width:100%">
           <el-table-column align="center" prop="date.couponId.value" label="优惠券名称" show-overflow-tooltip></el-table-column>
           <el-table-column align="center" prop="num" label="优惠券数量" show-overflow-tooltip></el-table-column>
@@ -472,7 +472,7 @@
 </template>
 
 <script>
-import { getDataFormLUP, getDataFormLUPById, checkPrice, dateFormat } from '@/assets/js/utils'
+import { getDataFormLUP, getDataFormLUPById, checkPrice, dateFormat, checkWorkHour } from '@/assets/js/utils'
 export default {
   name: 'billing',
   data (){
@@ -570,12 +570,6 @@ export default {
         sale: [
           { required: true, validator: checkPrice, trigger: 'blur' }
         ],
-        sum: [
-          { required: true, validator: checkPrice, trigger: 'blur' }
-        ],
-        workHour:[
-          { required: true, message: '请输入维修数量', trigger: 'blur' }
-        ],
         mobile: [
           { required: true, message: '请输入车主手机号', trigger: 'blur' }
         ],
@@ -587,9 +581,6 @@ export default {
         ],
         repairTypeLK: [
           { required: true, message: '请选择维修性质', trigger: 'blur' }
-        ],
-        mechanic: [
-          { required: true, message: '请选择维修工', trigger: 'blur' }
         ],
         level: [
           { required: true, message: '请选择客户级别', trigger: 'blur' }
@@ -611,6 +602,17 @@ export default {
         ],
         workorderState: [
           { required: true, message: '请选择工单状态', trigger: 'blur' }
+        ]
+      },
+      repairItemFormRules: {
+        sum: [
+          { required: true, validator: checkPrice, trigger: 'blur' }
+        ],
+        workHour:[
+          { required: true, validator: checkWorkHour, trigger: 'blur' }
+        ],
+        mechanic: [
+          { required: true, message: '请选择维修工', trigger: 'blur' }
         ]
       }
     }
@@ -666,7 +668,7 @@ export default {
     loadInventoryData(pageNo, pageSize) {
       if(this.userRole == 'super_admin'){
         this.searchcompany = ''
-      } 
+      }
       this.$http.get('/supercar/inventory/listInventory',{
         params: {
           'search.id_notIn': this.outpartItems.join(""),
@@ -706,11 +708,13 @@ export default {
           'page.size': 100
         }
       }).then((response) => {
-        this.clientCouponTableData = response.body.data.page.content
-        if(this.clientCouponTableData.length>0){
-          this.ownCoupon = true
-        }else{
-          this.ownCoupon = false
+        if(response.body.success){
+          this.clientCouponTableData = response.body.data.page.content
+          if(this.clientCouponTableData.length>0){
+            this.ownCoupon = true
+          }else{
+            this.ownCoupon = false
+          }
         }
       })
     },
@@ -724,7 +728,7 @@ export default {
     loadAccounts(){
       if(this.userRole == 'super_admin'){
         this.searchcompany = ''
-      } 
+      }
       this.$http.get('/supercar/user/page',{
         params: {
           'search.company_eq': this.searchcompany,
@@ -893,8 +897,8 @@ export default {
         code: row.code,
         name: row.name,
         workTypeLK: row.workTypeLK,
-        workHour: row.workHour,
-        sum: row.sum,
+        workHour: Number(row.workHour),
+        sum: Number(row.sum),
         description: row.description,
         mechanic: ''
       }
@@ -915,7 +919,11 @@ export default {
                 _this.repairItemTableDatas[_this.repairItemIndex].sum = _this.repairItemForm.sum
                 _this.repairItemTableDatas[_this.repairItemIndex].mechanic = _this.repairItemForm.mechanic
                 _this.repairItemTableDatas[_this.repairItemIndex].description = _this.repairItemForm.description
-                _this.repairItemTableDatas[_this.repairItemIndex].subtotal = Number(_this.repairItemTableDatas[_this.repairItemIndex].workHour) * Number(_this.repairItemForm.sum) * Number(_this.repairItemTableDatas[_this.repairItemIndex].discount/10)
+                if(_this.repairItemTableDatas[_this.repairItemIndex].discount){
+                  _this.repairItemTableDatas[_this.repairItemIndex].subtotal = Number(_this.repairItemTableDatas[_this.repairItemIndex].workHour) * Number(_this.repairItemForm.sum) * Number(_this.repairItemTableDatas[_this.repairItemIndex].discount/10)
+                }else{
+                  _this.repairItemTableDatas[_this.repairItemIndex].subtotal = Number(_this.repairItemTableDatas[_this.repairItemIndex].workHour) * Number(_this.repairItemForm.sum)
+                }
                 total += Number(_this.repairItemTableDatas[_this.repairItemIndex].subtotal)
                 _this.repairsTotal = total
                 _this.showRepairForm = false
@@ -928,7 +936,11 @@ export default {
                 _this.repairItemTableDatas.push(_this.repairItemForm)
                 _this.repairItems.push(_this.repairItemForm.id)
                 for(var i=0;i<_this.repairItemTableDatas.length;i++){
-                  _this.repairItemTableDatas[i].subtotal = Number(_this.repairItemTableDatas[i].workHour) * Number(_this.repairItemTableDatas[i].sum) * Number(_this.repairItemTableDatas[i].discount/10)
+                  if(_this.repairItemTableDatas[i].discount){
+                    _this.repairItemTableDatas[i].subtotal = Number(_this.repairItemTableDatas[i].workHour) * Number(_this.repairItemTableDatas[i].sum) * Number(_this.repairItemTableDatas[i].discount/10)
+                  }else{
+                    _this.repairItemTableDatas[i].subtotal = Number(_this.repairItemTableDatas[i].workHour) * Number(_this.repairItemTableDatas[i].sum)
+                  }
                   total += Number(_this.repairItemTableDatas[i].subtotal)
                 }
                 _this.repairsTotal = total
@@ -980,19 +992,27 @@ export default {
                 _this.productTableDatas[_this.outpartIndex].description = _this.outpartForm.description
                 _this.productTableDatas[_this.outpartIndex].sale = _this.outpartForm.sale
                 _this.productTableDatas[_this.outpartIndex].count = _this.outpartForm.count
-                _this.productTableDatas[_this.outpartIndex].subtotal = Number(_this.outpartForm.sale) * Number(_this.outpartForm.count) * (_this.productTableDatas[_this.outpartIndex].discount/10)
-                  total += Number(_this.productTableDatas[_this.outpartIndex].subtotal)
-                  _this.outpartsTotal = total
-                  _this.showOutpartForm = false
-                  _this.showProductForm = false
-                  _this.isLocked = false
+                if(_this.productTableDatas[_this.outpartIndex].discount){
+                  _this.productTableDatas[_this.outpartIndex].subtotal = Number(_this.outpartForm.sale) * Number(_this.outpartForm.count) * Number(_this.productTableDatas[_this.outpartIndex].discount/10)
+                }else{
+                  _this.productTableDatas[_this.outpartIndex].subtotal = Number(_this.outpartForm.sale) * Number(_this.outpartForm.count)
+                }
+                total += Number(_this.productTableDatas[_this.outpartIndex].subtotal)
+                _this.outpartsTotal = total
+                _this.showOutpartForm = false
+                _this.showProductForm = false
+                _this.isLocked = false
               },500)
             }else{
               setTimeout(function(){
                 _this.productTableDatas.push(_this.outpartForm)
                 _this.outpartItems.push(_this.outpartForm.id)
                 for(var i=0;i<_this.productTableDatas.length;i++){
-                  _this.productTableDatas[i].subtotal = Number(_this.productTableDatas[i].sale) * Number(_this.productTableDatas[i].count) * (_this.productTableDatas[i].discount/10)
+                  if(_this.productTableDatas[i].discount){
+                     _this.productTableDatas[i].subtotal = Number(_this.productTableDatas[i].sale) * Number(_this.productTableDatas[i].count) * Number(_this.productTableDatas[i].discount/10)
+                  }else{
+                     _this.productTableDatas[i].subtotal = Number(_this.productTableDatas[i].sale) * Number(_this.productTableDatas[i].count)
+                  }
                   total += Number(_this.productTableDatas[i].subtotal)
                 }
                 _this.outpartsTotal = total
@@ -1175,7 +1195,16 @@ export default {
                   _this.repairOrderForm = null
                   _this.clientTableData = null
                   _this.repairItemTableDatas = null
-                  _this.productTableDatas = null  
+                  _this.productTableDatas = null
+                })
+              }else{
+                _this.$alert('订单提交失败,请稍后重试', '温馨提示', {
+                  confirmButtonText: '确定',
+                  cancelButtonText: '取消',
+                  type: 'danger'
+                }).then(() => {
+                }).catch(() => {
+
                 })
               }
               this.isLocked = false

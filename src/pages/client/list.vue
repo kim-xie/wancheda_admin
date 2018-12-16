@@ -82,6 +82,10 @@
                   <el-form-item label="客户邮箱:">
                     <span>{{ props.row.email }}</span>
                   </el-form-item>
+                  <el-form-item label="客户性别:">
+                    <span v-if="props.row.sex == true">男</span>
+                    <span v-if="props.row.sex == false">女</span>
+                  </el-form-item>
                   <el-form-item label="客户级别:">
                     <span>{{ props.row.date.level.value }}</span>
                   </el-form-item>
@@ -90,6 +94,9 @@
                   </el-form-item>
                   <el-form-item label="更新时间:">
                     <span>{{ props.row.updateTime }}</span>
+                  </el-form-item>
+                  <el-form-item label="备注:">
+                    <span>{{ props.row.description }}</span>
                   </el-form-item>
                 </el-form>
               </template>
@@ -242,7 +249,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="优惠券数量" :label-width="formLabelWidth" prop="num" style="width:100%;">
-           <el-input-number v-model="clientCouponForm.num" @change="handleChange" :min="1" :max="10" style="width:100%;"></el-input-number>
+          <el-input-number v-model="clientCouponForm.num" @change="handleChange" :min="1" :max="10" style="width:100%;"></el-input-number>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer" style="text-align:center;">
@@ -304,6 +311,7 @@ export default {
         insuranceEndtime: ''
       },
       clientCouponForm: {
+        couponId: '',
         num: 1,
       },
       clientCouponTableData: [],
@@ -326,6 +334,9 @@ export default {
         carBrand: [
           { required: true, message: '请选择汽车品牌', trigger: 'blur' }
         ],
+        couponId: [
+          { required: true, message: '请选择优惠券', trigger: 'blur' }
+        ]
         /*registrationDate: [
          { required: true, message: '上牌日期不能为空', trigger: 'blur' }
         ],
@@ -393,8 +404,10 @@ export default {
           'page.size': pageSize
         }
       }).then((response) => {
-        this.clientCouponTableData = response.body.data.page.content
-        this.total1 = response.body.data.page.totalElements
+        if(response.body.success){
+          this.clientCouponTableData = response.body.data.page.content
+          this.total1 = response.body.data.page.totalElements
+        }
       })
     },
     goSearch() {
@@ -629,17 +642,25 @@ export default {
             }else{
               this.clientForm.registrationDate  = this.clientForm.registrationDate.toString()
             }
-            
             //alert(JSON.stringify(_this.clientForm.insuranceEndtime))
             this.$http.post(url,this.clientForm,{emulateJSON:true}).then((response) => {
-              this.$message({
-                type: 'success',
-                message: response.body.errorMsg,
-                duration: 2000,
-                showClose: true
-              })
-              this.restForm(formName)
-              this.loadData(1, this.pageSize)
+              if(response.body.success){
+                this.$message({
+                  type: 'success',
+                  message: response.body.errorMsg,
+                  duration: 2000,
+                  showClose: true
+                })
+                this.restForm(formName)
+                this.loadData(1, this.pageSize)
+              }else{
+                this.$message({
+                  type: 'warning',
+                  message: response.body.errorMsg,
+                  duration: 2000,
+                  showClose: true
+                })
+              }
               this.isLocked = false
             }, response => {
               this.$message({
@@ -664,14 +685,23 @@ export default {
             this.isLocked = true
             var url = '/supercar/clientCoupon/addCoupon'
             this.$http.post(url, this.clientCouponForm,{emulateJSON:true}).then((response) => {
-              this.$message({
-                type: 'success',
-                message: response.body.errorMsg,
-                duration: 2000,
-                showClose: true
-              })
-              this.restForm(formName)
-              this.loadClientCouponData(this.multipleSelection[0].id, this.pageNo1, this.pageSize1)
+              if(response.body.success){
+                this.$message({
+                  type: 'success',
+                  message: response.body.errorMsg,
+                  duration: 2000,
+                  showClose: true
+                })
+                this.restForm(formName)
+                this.loadClientCouponData(this.multipleSelection[0].id, this.pageNo1, this.pageSize1)
+              }else{
+                this.$message({
+                  type: 'warning',
+                  message: response.body.errorMsg,
+                  duration: 2000,
+                  showClose: true
+                })
+              }
               //this.loadData(1, this.pageSize)
               this.isLocked = false
             }, response => {
