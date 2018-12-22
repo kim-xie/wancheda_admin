@@ -324,6 +324,7 @@ export default {
         sale: row.sale,
         produceArea: row.produceArea,
         unitLK: row.unitLK,
+        unitLKVal: row.unitLKVal,
         repCodeLKVal: row.repCodeLKVal
       }
       this.showInpartForm = true

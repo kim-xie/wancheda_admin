@@ -269,7 +269,7 @@ export default {
     loadData(pageNo, pageSize) {
       if(this.userRole == 'super_admin'){
         this.searchcompany = ''
-      } 
+      }
       this.$http.get('/supercar/inPartInfo/extendPage',{
         params: {
           'search.company_eq': this.searchcompany,
@@ -287,6 +287,7 @@ export default {
         let totals = 0
         let _this = this
         this.selectTableData = this.$store.state.inpartFormParam
+        console.log(this.selectTableData)
         this.selectTotal = this.selectTableData.length
         for(var i=0;i<_this.selectTableData.length;i++){
           _this.selectTableData[i].subtotal = Number(_this.selectTableData[i].cost) * Number(_this.selectTableData[i].count)
@@ -302,7 +303,7 @@ export default {
     },
     goSearch() {
       if(this.search.supplierLK || this.search.workOrderNo || this.search.company){
-         this.serachData()
+        this.serachData()
       }else{
         this.$message({
           type: 'info',
@@ -431,6 +432,12 @@ export default {
             if(_this.selectTableData.length>0){
               this.$http.post('/supercar/inPart/newInPart',formObj).then((response) => {
                 if(response.body.success){
+                  this.$message({
+                  type: 'success',
+                  message: '入库成功',
+                  duration: 2000,
+                  showClose: true
+                })
                   this.selectTableData.splice(0,this.selectTableData.length)
                   this.inpartsTotal = 0
                   this.loadData(1,this.pageSize)
