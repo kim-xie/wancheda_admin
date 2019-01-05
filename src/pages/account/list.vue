@@ -161,8 +161,8 @@
 import CryptoJS from 'crypto-js/core'
 import MD5 from 'crypto-js/md5'
 import AES from 'crypto-js/aes'
-import {getDataFormLUP, getDataFormLUPById, getStore} from '@/assets/js/utils'
-import { mapState } from 'vuex'
+import {getDataFormLUP, getDataFormLUPById, getStore, isSuperAdmin} from '@/assets/js/utils'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'accountList',
   data (){
@@ -186,8 +186,7 @@ export default {
       }
     }
     return {
-      userId: '',
-      userRole: '',
+      accountId: '',
       usercompany: '',
       search: {},
       accountTableData: [],
@@ -235,37 +234,47 @@ export default {
       formLabelWidth: '120px'
     }
   },
+  computed: {
+    ...mapGetters([
+      'userId',
+      'userRole',
+      'company'
+    ])
+  },
   beforeCreate() {
 
   },
   created() {
-    
+    const _this = this
+    if(!this.userRole){
+      const userInfo = JSON.parse(getStore('session'))
+      this.$store.dispatch('getSessionUserInfo', userInfo)
+    }
+    this.usercompany = this.company
+    this.accountId = this.userId
+    this.loadData(this.pageNo, this.pageSize)
+    if(isSuperAdmin(this.userRole)){
+      _this.getCompanys()
+    }
+    getDataFormLUP('user_role',function(){
+      let newUserRole = this
+      if(isSuperAdmin(this.userRole)){
+          _this.roles = newUserRole
+      }else{
+        for(var i=0;i<newUserRole.length;i++){
+          if(isSuperAdmin(newUserRole[i].code)){
+            newUserRole.splice(i,1)
+          }
+        }
+        _this.roles = newUserRole
+      }
+    })
   },
   beforeMount(){
 
   },
   mounted(){
-    let _this = this
-    setTimeout(function(){
-      _this.userId = _this.$store.state.userInfo.id
-      _this.userRole = _this.$store.state.userInfo.roleName
-      _this.usercompany = _this.$store.state.userInfo.company
-      _this.loadData(_this.pageNo, _this.pageSize)
-      _this.getCompanys()
-      getDataFormLUP('user_role',function(){
-        let newUserRole = this
-        if(_this.userRole == 'super_admin'){
-            _this.roles = newUserRole
-        }else{
-          for(var i=0;i<newUserRole.length;i++){
-            if(newUserRole[i].code == 'super_admin'){
-              newUserRole.splice(i,1)
-            }
-          }
-          _this.roles = newUserRole
-        }
-      })
-    },1000)
+
   },
   beforeUpdate(){
 
@@ -279,20 +288,18 @@ export default {
   destroyed(){
 
   },
-  computed: mapState({
-
-  }),
   methods: {
     loadData(pageNo,pageSize) {
-      if(this.userRole == 'super_admin'){
+      if(isSuperAdmin(this.userRole)){
         this.usercompany = '',
-        this.userId = ''
+        this.accountId = ''
       } else if(this.userRole == 'company_admin'){
-        this.userId = ''
+        this.accountId = ''
       }
       this.$http.get('/supercar/user/page',{
         params:{
-          'search.id_eq': this.userId,
+          'loading': true,
+          'search.id_eq': this.accountId,
           'search.company_eq': this.usercompany,
           'page.pn': pageNo,
           'page.size': pageSize
@@ -303,11 +310,11 @@ export default {
       })
     },
     goSearch() {
-      if(this.userRole == 'super_admin'){
+      if(isSuperAdmin(this.userRole)){
         this.usercompany = this.search.company,
-        this.userId = ''
+        this.accountId = ''
       } else if(this.userRole == 'company_admin'){
-        this.userId = ''
+        this.accountId = ''
       }
       if(this.search.username || this.search.company || this.search.mobile){
         this.serachData()
@@ -324,18 +331,19 @@ export default {
       this.search.username = ''
       this.search.company = ''
       this.search.mobile = ''
-      if(this.userRole == 'super_admin'){
+      if(isSuperAdmin(this.userRole)){
         this.usercompany = this.search.company,
-        this.userId = ''
+        this.accountId = ''
       } else if(this.userRole == 'company_admin'){
-        this.userId = ''
+        this.accountId = ''
       }
       this.serachData()
     },
     serachData(){
       this.$http.get('/supercar/user/page',{
         params: {
-          'search.id_eq': this.userId,
+          'loading': true,
+          'search.id_eq': this.accountId,
           'search.username_like': this.search.username,
           'search.company_eq': this.usercompany,
           'search.mobile_like': this.search.mobile,

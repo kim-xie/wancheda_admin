@@ -34,7 +34,7 @@
         <div class="grid-content">
           <div class="tableTitle">
             <el-button type="primary" icon="plus"  @click="addlookup">新增数据</el-button>
-            <el-button type="danger" icon="delete"  @click="removelookup">批量删除</el-button>
+            <el-button v-if="userRole === 'super_admin' || userRole === 'company_admin'" type="danger" icon="delete"  @click="removelookup">批量删除</el-button>
           </div>
           <el-table :data="lookupTableData" border tooltip-effect="dark" style="width: 100%" :default-sort = "{prop: 'createTime', order: 'descending'}" @selection-change="handleSelectionChange">
             <el-table-column align="center" type="index" width="55"></el-table-column>
@@ -47,7 +47,7 @@
             <el-table-column align="center" label="操作" show-overflow-tooltip>
               <template scope="scope">
                 <el-button size="small" icon="edit" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                <el-button size="small" icon="delete" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                <el-button v-if="userRole === 'super_admin' || userRole === 'company_admin'" size="small" icon="delete" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -66,7 +66,7 @@
       </el-col>
     </el-row>
 
-    <!-- 新增客户 -->
+    <!-- 新增数据字典定义 -->
     <el-dialog title="新增数据字典定义" :visible.sync="showForm" class="lookupForm">
       <el-form :model="lookupForm" ref="lookupForm" :rules="rules">
         <el-form-item label="名称" :label-width="formLabelWidth" prop="name">
@@ -99,12 +99,12 @@
 
 <script>
 import { getLookupDf, removeLookupDf } from '@/service/getData'
+import { getStore, isSuperAdmin } from '@/assets/js/utils'
+import { mapGetters } from 'vuex'
 export default {
   name: 'lookupList',
   data (){
     return {
-      userId: '',
-      userRole: '',
       usercompany: '',
       search: {},
       lookupTableData: [],
@@ -143,16 +143,23 @@ export default {
       formLabelWidth: '120px'
     }
   },
+  computed: {
+    ...mapGetters([
+      'userId',
+      'userRole',
+      'company'
+    ])
+  },
   created() {
+    const _this = this
+    if(!this.userRole){
+      const userInfo = JSON.parse(getStore('session'))
+      this.$store.dispatch('getSessionUserInfo', userInfo)
+    }
+    this.usercompany = this.company
+    this.loadData(this.pageNo, this.pageSize)
   },
   mounted(){
-    let _this = this
-    setTimeout(function(){
-      _this.userId = _this.$store.state.userInfo.id
-      _this.userRole = _this.$store.state.userInfo.roleName
-      _this.usercompany = _this.$store.state.userInfo.company
-      _this.loadData(_this.pageNo,_this.pageSize)
-    },1000)
   },
   methods: {
     vilidateCode(lookupDfCode,callback){
@@ -182,14 +189,16 @@ export default {
     loadData(pageNo, pageSize) {
       let _this = this
       let param = ''
-      if(_this.userRole == 'super_admin'){
+      if(isSuperAdmin(this.userRole)){
         param = {
+          'loading': true,
           'search.isDeleted_eq': false,
           'page.pn': pageNo,
           'page.size':pageSize
         }
       }else{
         param = {
+          'loading': true,
           'search.code_ne': 'user_role',
           'search.isDeleted_eq': false,
           'page.pn': pageNo,
@@ -201,10 +210,10 @@ export default {
         this.total = response.body.data.page.totalElements
       }, response => {
         this.$message({
-           type: 'info',
-           message: '网络请求失败',
-           duration: 3000,
-           showClose: true
+          type: 'info',
+          message: '网络请求失败',
+          duration: 3000,
+          showClose: true
         })
       })
     },
@@ -228,6 +237,7 @@ export default {
     serachData(){
       this.$http.get('/supercar/lookup_definition/page',{
         params: {
+          'loading': true,
           'search.name_like': this.search.name,
           'search.code_like': this.search.code,
           'search.isDeleted_eq': false,
@@ -278,7 +288,7 @@ export default {
               duration: 3000,
               showClose: true
           })
-          this.loadData()
+          this.loadData(this.pageNo, this.pageSize)
         }, response => {
           this.$message({
             type: 'error',
@@ -342,7 +352,7 @@ export default {
           showClose: true
         })
         obj.restForm(formName)
-        obj.loadData()
+        obj.loadData(this.pageNo, this.pageSize)
         obj.isLocked = false
       }, response => {
         obj.$message({
@@ -372,7 +382,7 @@ export default {
                 duration: 3000,
                 showClose: true
             })
-            this.loadData()
+            this.loadData(this.pageNo, this.pageSize)
           }, response => {
             this.$message({
               type: 'error',

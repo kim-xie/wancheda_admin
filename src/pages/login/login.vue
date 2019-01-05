@@ -70,10 +70,10 @@
       }
     },
     beforeCreate: function () {
-      console.group('beforeCreate 创建前状态=======login.vue========》');
+      //console.group('beforeCreate 创建前状态=======login.vue========》');
     },
     created: function () {
-      console.group('created 创建完毕状态=======login.vue========》');
+      //console.group('created 创建完毕状态=======login.vue========》');
       let component = this;
       document.onkeydown = function(){
         component.show();
@@ -133,21 +133,24 @@
           //请求后端
           this.$http.get('/supercar/user/login',{params:params}).then((response) => {
             if(response.body.success){
-              var _this = this
+              const _this = this
+              const user = response.body.data.entity
               //如果登录成功则保存登录状态并设置有效期
               if(remember_Me){
-                setStore('kim_un', response.body.data.entity.username, 30)
-                setStore('kim_id', response.body.data.entity.id, 30)
-                setStore('kim_cp', response.body.data.entity.company, 30)
-                setStore('kim_rl', response.body.data.entity.role, 30)
+                setStore('kim_un', user.username, 30)
+                setStore('kim_id', user.id, 30)
+                setStore('kim_cp', user.company, 30)
+                setStore('kim_rl', user.role, 30)
+                setStore('kim_cn', user.date.company.name)
               } else {
-                setStore('kim_un', response.body.data.entity.username)
-                setStore('kim_id', response.body.data.entity.id)
-                setStore('kim_cp', response.body.data.entity.company)
-                setStore('kim_rl', response.body.data.entity.role)
+                setStore('kim_un', user.username)
+                setStore('kim_id', user.id)
+                setStore('kim_cp', user.company)
+                setStore('kim_rl', user.role)
+                setStore('kim_cn', user.date.company.name)
               }
-              this.$store.dispatch("getUserInfo")
-              //跳转登录成功页面
+              // this.$store.dispatch("getUserInfo")
+              // 跳转登录成功页面
               this.$router.replace('/index')
             }else{
               this.$message({

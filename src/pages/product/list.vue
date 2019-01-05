@@ -278,6 +278,7 @@ export default {
     loadData(pageNo,pageSize) {
       this.$http.get('/supercar/part/page',{
         params:{
+          'loading': true,
           'search.isDeleted_eq': false,
           'page.pn': pageNo,
           'page.size': pageSize
@@ -333,6 +334,7 @@ export default {
     serachData(){
       this.$http.get('/supercar/part/page',{
         params: {
+          'loading': true,
           'search.name_like': this.search.name,
           'search.code_like': this.search.code,
           'search.isDisable_eq': this.search.isDisable,

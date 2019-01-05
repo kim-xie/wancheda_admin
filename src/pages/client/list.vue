@@ -291,13 +291,12 @@
 </template>
 
 <script>
-import { getDataFormLUP } from '@/assets/js/utils'
+import { getDataFormLUP, getStore, isSuperAdmin } from '@/assets/js/utils'
+import { mapGetters } from 'vuex'
 export default {
   name: 'clientList',
   data (){
     return {
-      userId: '',
-      userRole: '',
       usercompany: '',
       searchCompany: '',
       search: {
@@ -364,28 +363,39 @@ export default {
       formLabelWidth: '120px'
     }
   },
+  computed: {
+    ...mapGetters([
+      'userId',
+      'userRole',
+      'company'
+    ])
+  },
   created() {
-    let _this = this
-    setTimeout(function(){
-      _this.userId = _this.$store.state.userInfo.id
-      _this.userRole = _this.$store.state.userInfo.roleName
-      _this.usercompany = _this.$store.state.userInfo.company
-      _this.searchCompany = _this.usercompany
-      _this.loadData(_this.pageNo, _this.pageSize)
-    },1000)
-    _this.getCompanys()
+    const _this = this
+    if(!this.userRole){
+      const userInfo = JSON.parse(getStore('session'))
+      this.$store.dispatch('getSessionUserInfo', userInfo)
+    }
+    this.usercompany = this.company
+    this.searchCompany = this.company
+    if(isSuperAdmin(_this.userRole)){
+      _this.getCompanys()
+    }
+    this.loadData(this.pageNo, this.pageSize)
     getDataFormLUP('client_level',function() {_this.clientGrade = this})
     getDataFormLUP('client_type',function() {_this.clientType = this})
     getDataFormLUP('car_brand',function() {_this.carBrands = this})
     getDataFormLUP('clientCoupon',function() {_this.coupons = this})
   },
   methods: {
+    // 加载列表数据
     loadData(pageNo,pageSize) {
-      if(this.userRole == 'super_admin'){
+      if(isSuperAdmin(this.userRole)){
         this.searchCompany = this.search.company
-      } 
+      }
       this.$http.get('/supercar/client/page',{
         params:{
+          'loading': true,
           'search.company_eq': this.searchCompany,
           'search.isDeleted_eq': false,
           'page.pn': pageNo,
@@ -396,9 +406,11 @@ export default {
         this.total = response.body.data.page.totalElements
       })
     },
+    // 加载优惠券列表
     loadClientCouponData(clientId,pageNo,pageSize) {
       this.$http.get('/supercar/clientCoupon/page',{
         params:{
+          'loading': true,
           'search.clientId_eq': clientId,
           'page.pn': pageNo,
           'page.size': pageSize
@@ -411,9 +423,9 @@ export default {
       })
     },
     goSearch() {
-      if(this.userRole == 'super_admin'){
+      if(isSuperAdmin(this.userRole)){
         this.searchCompany = this.search.company
-      } 
+      }
       if(this.search.carNo || this.search.name || this.search.mobile || this.search.company){
         this.serachData()
       }else{
@@ -429,7 +441,7 @@ export default {
       this.search.carNo = ''
       this.search.name = ''
       this.search.mobile = ''
-      if(this.userRole == 'super_admin'){
+      if(isSuperAdmin(this.userRole)){
         this.searchCompany = ''
       }
       this.serachData()
@@ -437,6 +449,7 @@ export default {
     serachData(){
       this.$http.get('/supercar/client/page',{
         params: {
+          'loading': true,
           'search.carNo_like': this.search.carNo,
           'search.name_like': this.search.name,
           'search.mobile_like': this.search.mobile,
@@ -457,6 +470,7 @@ export default {
         })
       })
     },
+    // 公司列表
     getCompanys() {
       this.$http.get('/supercar/company/page?search.isDeleted_eq=false&page.pn=1&page.size=1000').then((response) => {
         this.companys = response.body.data.page.content

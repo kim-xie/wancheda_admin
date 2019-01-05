@@ -1,7 +1,7 @@
 <template>
   <div id="serviceRecord">
     <el-row class="searchBox" :gutter="20">
-      <el-col :span="4" v-if="userRole == 'super_admin'">
+      <el-col :span="4" v-if="userRole === 'super_admin'">
         <div class="grid-content">
           <span class="searchTitle">公司名称</span>
           <div class="searchInput">
@@ -153,7 +153,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <div class="tablePages" style="margin-top:10px;text-align:right">
+          <!-- <div class="tablePages" style="margin-top:10px;text-align:right">
             <el-pagination
               @size-change="unpayHandleSizeChange"
               @current-change="unpayHandleCurrentChange"
@@ -163,7 +163,7 @@
               layout="total, sizes, prev, pager, next, jumper"
               :total="unpayTotal">
             </el-pagination>
-          </div>
+          </div> -->
         </el-tab-pane>
         <el-tab-pane>
           <span slot="label"><i class="el-icon-date"></i> 所有维修记录({{total}})</span>
@@ -263,13 +263,12 @@
 </template>
 
 <script>
-import { getDataFormLUP, getDataFormLUPById } from '@/assets/js/utils'
+import { getDataFormLUP, getDataFormLUPById, getStore, isSuperAdmin } from '@/assets/js/utils'
+import { mapGetters } from 'vuex'
 export default {
   name: 'serviceRecord',
   data (){
     return {
-      userId: '',
-      userRole: '',
       usercompany: '',
       search: {
         company: '',
@@ -292,35 +291,47 @@ export default {
       is_expend: false
     }
   },
-  mounted() {
-    $(".el-card__header").css("padding","5px 20px")
+  computed: {
+    ...mapGetters([
+      'userId',
+      'userRole',
+      'company'
+    ])
   },
   created() {
-    let _this = this
-    _this.getCompanys()
-    setTimeout(function(){
-      _this.userId = _this.$store.state.userInfo.id
-      _this.userRole = _this.$store.state.userInfo.roleName
-      _this.usercompany = _this.$store.state.userInfo.company
-      _this.loadAllData(_this.pageNo,_this.pageSize)
-      _this.loadUnpayData(_this.unpayPageNo,_this.unpayPageSize)
-    },2000)
+    if(!this.userRole){
+      const userInfo = JSON.parse(getStore('session'))
+      this.$store.dispatch('getSessionUserInfo', userInfo)
+    }
+    this.usercompany = this.company
+    this.loadAllData(this.pageNo,this.pageSize)
+    //this.loadUnpayData(this.unpayPageNo,this.unpayPageSize)
+  },
+  mounted() {
+    $(".el-card__header").css("padding","5px 20px")
+    const _this = this
+    if(isSuperAdmin(_this.userRole)){
+      _this.getCompanys()
+    }
     getDataFormLUP('work_type',function() {_this.workType = this})
   },
   methods: {
+    // 加载所有记录
     loadAllData(pageNo,pageSize) {
-      if(this.userRole == 'super_admin'){
-        this.usercompany = ''
-      }
       this.$http.get('/supercar/repairWorkorder/page',{
         params:{
-          'search.company_eq': this.usercompany,
+          'loading': true,
+          'search.company_eq': isSuperAdmin(this.userRole)?'':this.usercompany,
           'page.pn': pageNo,
           'page.size': pageSize
         }
       }).then((response) => {
         this.allItemTableData = response.body.data.page.content
         this.total = response.body.data.page.totalElements
+        this.unpayTableData = this.allItemTableData.filter(item => {
+          return item.workorderState === '维修中'
+        })
+        this.unpayTotal = this.unpayTableData.length
       }, response => {
         this.$message({
           type: 'error',
@@ -330,6 +341,7 @@ export default {
         })
       })
     },
+    // 加载维修中的订单
     loadUnpayData(pageNo,pageSize) {
       if(this.userRole == 'super_admin'){
         this.usercompany = ''
@@ -353,6 +365,7 @@ export default {
         })
       })
     },
+    // 搜索
     goSearch() {
       if(this.userRole == 'super_admin'){
         this.usercompany = this.search.company
@@ -368,6 +381,7 @@ export default {
         })
       }
     },
+    // 中置
     restSearch() {
       this.search.carNo = ''
       this.search.workorderNo = ''
@@ -379,6 +393,7 @@ export default {
       }
       this.searchData()
     },
+    // 搜索
     searchData(){
       if(this.userRole == 'super_admin'){
         this.usercompany = this.search.company
@@ -464,11 +479,13 @@ export default {
         })
       }
     },
+    // 获取公司列表
     getCompanys() {
       this.$http.get('/supercar/company/page?search.isDeleted_eq=false&page.pn=1&page.size=1000').then((response) => {
         this.companys = response.body.data.page.content
       })
     },
+    // 结账
     changeState(index, row){
       this.$confirm('确认收到账款了吗？此操作后将无法撤销, 是否继续?', '温馨提示', {
         confirmButtonText: '确定',
@@ -490,7 +507,7 @@ export default {
               showClose: true
             })
             this.loadAllData(this.pageNo, this.pageSize)
-            this.loadUnpayData(this.unpayPageNo,this.unpayPageSize)
+            //this.loadUnpayData(this.unpayPageNo,this.unpayPageSize)
           }
         }, response => {
           this.$message({
@@ -509,6 +526,7 @@ export default {
         })
       })
     },
+    // 查看详情
     expandRow(row, expanded){
       if(expanded){
         this.is_expend = true
@@ -518,17 +536,9 @@ export default {
       }
     },
     loadMore(index, row){
-      //alert(row.workorderNo)
-      if(this.is_expend){
-        $(".el-tab-pane[style='']").find(".el-table__expand-icon").eq(index).trigger("click")
-        this.is_expend = false
-      }else{
-        this.getDetail(row, function(){
-          $(".el-tab-pane[style='']").find(".el-table__expand-icon").eq(index).trigger("click")
-          this.is_expend = true
-        })
-      }
+      $(".el-tab-pane[style='']").find(".el-table__expand-icon").eq(index).trigger("click")
     },
+    // 获取详情信息
     getDetail(row, callback){
       this.$http.get('/supercar/repairWorkorder/getItemsAndParts',{
         params: {

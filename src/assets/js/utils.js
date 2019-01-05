@@ -279,4 +279,13 @@ export const dateFormat = (format, date) => {
   }  
 
   return format  
-} 
+}
+
+// 权限判断
+export const isSuperAdmin = (roleName) => {
+  if (roleName === 'super_admin'){
+    return true
+  }else{
+    return false
+  }
+}

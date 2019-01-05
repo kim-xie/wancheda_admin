@@ -36,7 +36,7 @@
     <el-row class="clientInfoBox">
       <el-col :span="24">
         <div class="grid-content">
-          <div class="tableTitle" v-if="userRole=='super_admin'">
+          <div class="tableTitle" v-if="userRole==='super_admin'">
             <el-button type="primary" icon="plus"  @click="addCompany">新增门店</el-button>
             <el-button type="danger" icon="delete"  @click="removeCompany">批量删除</el-button>
           </div>
@@ -74,17 +74,10 @@
             <el-table-column align="center" prop="description" label="描述" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" prop="createTime" sortable label="创建时间" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" prop="updateTime" sortable label="更新时间" show-overflow-tooltip></el-table-column>
-            <el-table-column align="center" label="操作" width="200" v-if="userRole=='super_admin' || userRole=='company_admin'" >
-              <template slots-scope="scope">
-                <el-button 
-                  size="small" 
-                  @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                <el-button 
-                  v-if="userRole=='super_admin'" 
-                  size="small" 
-                  type="danger" 
-                  :plain="true"
-                  @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <el-table-column align="center" label="操作" width="200">
+              <template scope="scope">
+                <el-button v-if="userRole==='super_admin' || userRole==='company_admin'" size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                <el-button v-if="userRole==='super_admin'" size="small" type="danger" :plain="true" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -166,13 +159,12 @@
 </template>
 
 <script>
-import { getDataFormLUP } from '@/assets/js/utils'
+import { getDataFormLUP, getStore, isSuperAdmin } from '@/assets/js/utils'
+import { mapGetters } from 'vuex'
 export default {
   name: 'companyList',
   data (){
     return {
-      userId: '',
-      userRole: '',
       usercompany: '',
       search: {},
       companyTableData: [],
@@ -221,19 +213,26 @@ export default {
       formLabelWidth: '120px'
     }
   },
+  computed: {
+    ...mapGetters([
+      'userId',
+      'userRole',
+      'company'
+    ])
+  },
   created() {
-    let _this = this
-    setTimeout(function(){
-      _this.userId = _this.$store.state.userInfo.id
-      _this.userRole = _this.$store.state.userInfo.roleName
-      _this.usercompany = _this.$store.state.userInfo.company
-      _this.loadData(_this.pageNo, _this.pageSize)
-    },1000)
+    const _this = this
+    if(!this.userRole){
+      const userInfo = JSON.parse(getStore('session'))
+      this.$store.dispatch('getSessionUserInfo', userInfo)
+    }
+    this.usercompany = this.company
+    this.loadData(this.pageNo, this.pageSize)
     getDataFormLUP('company_type',function() {_this.companyType = this})
   },
   methods: {
     goSearch() {
-      if(this.userRole == 'super_admin'){
+      if(isSuperAdmin(this.userRole)){
         this.usercompany = this.search.company
       }
       if(this.search.name || this.search.code || this.search.address || this.search.company){
@@ -251,7 +250,7 @@ export default {
       this.search.name = ''
       this.search.code = ''
       this.search.address = ''
-      if(this.userRole == 'super_admin'){
+      if(isSuperAdmin(this.userRole)){
         this.usercompany = ''
       }
       this.serachData()
@@ -259,6 +258,7 @@ export default {
     serachData(){
       this.$http.get('/supercar/company/page',{
         params: {
+          'loading': true,
           'search.id_eq': this.usercompany,
           'search.name_like': this.search.name,
           'search.code_like': this.search.code,
@@ -280,11 +280,12 @@ export default {
       })
     },
     loadData(pageNo,pageSize) {
-      if(this.userRole == 'super_admin'){
+      if(isSuperAdmin(this.userRole)){
         this.usercompany = ''
       }
       this.$http.get('/supercar/company/page',{
         params:{
+          'loading': true,
           'search.id_eq': this.usercompany,
           'search.isDeleted_eq': false,
           'page.pn': pageNo,

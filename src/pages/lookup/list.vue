@@ -41,14 +41,20 @@
         <div class="grid-content">
           <div class="tableTitle">
             <el-button type="primary" icon="plus" @click="addlookup">新增数据</el-button>
-            <el-button type="danger" icon="delete" @click="removelookup">批量删除</el-button>
+            <el-button v-if="userRole === 'super_admin' || userRole === 'company_admin'" type="danger" icon="delete" @click="removelookup">批量删除</el-button>
           </div>
           <el-table :data="lookupTableData" border tooltip-effect="dark" style="width: 100%" :default-sort = "{prop: 'createTime', order: 'descending'}" @selection-change="handleSelectionChange">
             <el-table-column align="center" type="index" width="55"></el-table-column>
             <el-table-column align="center" type="selection" width="55"></el-table-column>
             <el-table-column align="center" prop="value" label="名称" show-overflow-tooltip></el-table-column>
             <el-table-column align="center" prop="code" label="代码" show-overflow-tooltip></el-table-column>
-            <el-table-column v-if="lookupDfName == '客户级别'" align="center" prop="additional" label="折扣" show-overflow-tooltip></el-table-column>
+            <el-table-column v-if="lookupDfName == '客户级别'" align="center" prop="additional" label="折扣" show-overflow-tooltip>
+              <template scope="scope">
+                <el-tag size="medium" type="success" close-transition>
+                  {{scope.row.additional}} 折
+                </el-tag>
+              </template>
+            </el-table-column>
             <el-table-column v-if="lookupDfType == 1" align="center" prop="zzIsLeaf" label="父节点">
               <template scope="scope">
                 <el-tag v-if="scope.row.zzIsLeaf == false || scope.row.zzIsLeaf == undefined" :type="scope.row.zzIsLeaf != true ? 'success' : 'primary'" close-transition>
@@ -63,7 +69,7 @@
             <el-table-column align="center" label="操作" show-overflow-tooltip>
               <template scope="scope">
                 <el-button size="small" icon="edit" type="primary" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                <el-button size="small" icon="delete" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                <el-button v-if="userRole === 'super_admin' || userRole === 'company_admin'" size="small" icon="delete" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -107,7 +113,7 @@
         </template>
         <template v-if="lookupDfName == '客户级别'">
           <el-form-item label="折扣" :label-width="formLabelWidth" prop="additional">
-            <el-input placeholder="客户折扣" v-model="lookupForm.additional">
+            <el-input placeholder="客户折扣" type="number" :min="0" :max="10" v-model="lookupForm.additional">
               <template slot="append">折</template>
             </el-input>
           </el-form-item>
@@ -125,13 +131,12 @@
 </template>
 
 <script>
-import { checkDiscount } from '@/assets/js/utils'
+import { checkDiscount, getStore, isSuperAdmin } from '@/assets/js/utils'
+import { mapGetters } from 'vuex'
 export default {
   name: 'lookupList',
   data (){
     return {
-      userId: '',
-      userRole: '',
       usercompany: '',
       searchcompany: '',
       search: {
@@ -167,18 +172,25 @@ export default {
       formLabelWidth: '120px'
     }
   },
+  computed: {
+    ...mapGetters([
+      'userId',
+      'userRole',
+      'company'
+    ])
+  },
   created() {
-    
+    const _this = this
+    if(!this.userRole){
+      const userInfo = JSON.parse(getStore('session'))
+      this.$store.dispatch('getSessionUserInfo', userInfo)
+    }
+    this.usercompany = this.company
+    this.searchCompany = this.company
+    this.loadData(this.pageNo, this.pageSize)
   },
   mounted(){
-    let _this = this
-    setTimeout(function(){
-      _this.userId = _this.$store.state.userInfo.id
-      _this.userRole = _this.$store.state.userInfo.roleName
-      _this.usercompany = _this.$store.state.userInfo.company
-      _this.searchcompany = _this.$store.state.userInfo.company
-      _this.loadData(_this.pageNo,_this.pageSize)
-    },1000)
+
   },
   methods: {
     loadData(pageNo,pageSize) {
@@ -187,14 +199,16 @@ export default {
         _this.loadLookupData(_this.lookupDefineCode,pageNo,pageSize)
       }else{
         let param = ''
-        if(_this.userRole == 'super_admin'){
+        if(isSuperAdmin(this.userRole)){
           param = {
+            'loading': true,
             'search.isDeleted_eq': false,
             'page.pn': 1,
             'page.size':1000
           }
         }else{
           param = {
+            'loading': true,
             'search.code_ne': 'user_role',
             'search.isDeleted_eq': false,
             'page.pn': 1,
@@ -227,6 +241,7 @@ export default {
       _this.$http.get('/supercar/lookup/pageByDefineCode',
         {
           params:{
+            'loading': true,
             lookupDefineCode: lookupDefineCode,
             pageNo: pageNo,
             pageSize: pageSize
@@ -253,6 +268,7 @@ export default {
                 _this.$http.get('/supercar/lookup/pageByDefineCode',
                 {
                   params:{
+                    'loading': true,
                     lookupDefineCode: _this.lookupDfds[i].code,
                     pageNo: 1,
                     pageSize: 1000
@@ -280,6 +296,7 @@ export default {
                 _this.$http.get('/supercar/lookup/pageByDefineCode',
                 {
                   params:{
+                    'loading': true,
                     lookupDefineCode: _this.lookupDfds[i].code,
                     pageNo: 1,
                     pageSize: 1000

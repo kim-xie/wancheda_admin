@@ -169,7 +169,7 @@
       </el-tab-pane>
 
       <el-tab-pane>
-        <span slot="label"><i class="el-icon-circle-check"></i> 已出库</span>
+        <span slot="label"><i class="el-icon-circle-check"></i> 已出库({{total}})</span>
         <el-row :gutter="20">
           <el-col :span="24" >
             <el-row class="clientInfoBox">
@@ -231,12 +231,11 @@
 </template>
 
 <script>
-import { getDataFormLUP, getDataFormLUPById } from '@/assets/js/utils'
+import { getDataFormLUP, getDataFormLUPById, getStore, isSuperAdmin } from '@/assets/js/utils'
+import { mapGetters } from 'vuex'
 export default {
   data (){
     return {
-      userId: '',
-      userRole: '',
       usercompany: '',
       searchcompany: '',
       loadingOutpartType: '',
@@ -301,18 +300,27 @@ export default {
       formLabelWidth: '100px'
     }
   },
+  computed: {
+    ...mapGetters([
+      'userId',
+      'userRole',
+      'company'
+    ])
+  },
   created() {
-    let _this = this
-    setTimeout(function(){
-      _this.userId = _this.$store.state.userInfo.id
-      _this.userRole = _this.$store.state.userInfo.roleName
-      _this.usercompany = _this.$store.state.userInfo.company
-      _this.searchcompany = _this.$store.state.userInfo.company
-      _this.loadData(_this.pageNo, _this.pageSize)
-    },1000)
-    _this.loadOutpartFormData()
-    _this.loadAccounts()
-    _this.loadcompanys()
+    const _this = this
+    if(!this.userRole){
+      const userInfo = JSON.parse(getStore('session'))
+      this.$store.dispatch('getSessionUserInfo', userInfo)
+    }
+    this.usercompany = this.company
+    this.searchCompany = this.company
+    if(isSuperAdmin(_this.userRole)){
+      _this.loadcompanys()
+    }
+    this.loadData(this.pageNo, this.pageSize)
+    this.loadOutpartFormData()
+    this.loadAccounts()
     getDataFormLUP('unit',function() {_this.unitObj = this})
     getDataFormLUP('part_type',function() {_this.pCategory = this})
     getDataFormLUP('repCode',function() {_this.repCode = this})
@@ -324,11 +332,12 @@ export default {
   },*/
   methods: {
     loadData(pageNo, pageSize) {
-      if(this.userRole == 'super_admin'){
+      if(isSuperAdmin(this.userRole)){
         this.searchcompany = ''
-      } 
+      }
       this.$http.get('/supercar/outPartInfo/extendPage',{
         params: {
+          'loading': true,
           'search.company_eq': this.searchcompany,
           'search.isDeleted_eq': false,
           'page.pn': pageNo,
@@ -346,7 +355,7 @@ export default {
         }
         setTimeout(function(){
           for(var i=0;i<outpartTypeVals.length;i++){
-           tableData[i].outpartTypeVal = outpartTypeVals[i]
+            tableData[i].outpartTypeVal = outpartTypeVals[i]
           }
           _this.productTableData = tableData
         },1000)
@@ -392,7 +401,7 @@ export default {
       })
     },
     goSearch() {
-      if(this.userRole == 'super_admin'){
+      if(isSuperAdmin(this.userRole)){
         this.searchcompany = this.search.company
       }
       if(this.search.type || this.search.workOrderNo || this.search.company){

@@ -197,9 +197,11 @@ export default {
     getDataFormLUP('work_type',function() {_this.workType = this})
   },
   methods: {
+    // 加载列表数据
     loadData(pageNo,pageSize) {
       this.$http.get('/supercar/repairItem/page',{
         params: {
+          'loading': true,
           'page.pn': pageNo,
           'page.size': pageSize
         }
@@ -231,6 +233,7 @@ export default {
     serachData(){
       this.$http.get('/supercar/repairItem/page',{
         params: {
+          'loading': true,
           'search.name_like': this.search.name,
           'search.code_like': this.search.code,
           'search.workTypeLK_eq': this.search.workTypeLK,

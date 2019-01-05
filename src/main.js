@@ -37,6 +37,8 @@ Vue.config.devtools = true
 Vue.use(VueResource)
 Vue.use(ElementUI)
 
+let loadingInstance = ''
+
 // vue-resource拦截器
 Vue.http.interceptors.push(function (request, next) {
 
@@ -56,15 +58,25 @@ Vue.http.interceptors.push(function (request, next) {
   //   request.enumlateHTTP = false
   // }
 
+  if (request.params.loading) {
+    // 请求加载中
+    loadingInstance = Vue.prototype.$loading({
+      fullscreen: true,
+      text: '玩命加载中...'
+    })
+  }
   if (process.env.NODE_ENV === 'development') {
     // console.log('development')
-    // request.url = 'http://127.0.0.1:8081' + request.url
+    request.url = 'https://www.kimshare.club:8843' + request.url
   } else if (process.env.NODE_ENV === 'production') {
-    request.url = 'http://47.75.131.186:8080' + request.url
+    request.url = 'https://www.kimshare.club:8843' + request.url
   }
   next(function (response) {
     // 请求发送后的处理逻辑
     // 根据请求的状态，response参数会返回给successCallback或errorCallback
+    if (response.url.indexOf('loading') !== -1 && loadingInstance !== '') {
+      loadingInstance.close()
+    }
     return response
   })
 })
@@ -93,6 +105,7 @@ new Vue({
         if (_this.$route.path.indexOf('/login') !== -1) {
           _this.$router.go(-1)
         }
+        // 分发用户信息
         this.$store.dispatch("getUserInfo")
       }
     }

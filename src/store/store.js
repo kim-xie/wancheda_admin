@@ -22,7 +22,24 @@ const state = {
 }
 
 const getters = {
-
+  userId: (state) => {
+    return state.userInfo.id
+  },
+  userRole: (state) => {
+    return state.userInfo.roleName
+  },
+  company: (state) => {
+    return state.userInfo.company
+  },
+  userName: (state) => {
+    return state.userInfo.userName
+  },
+  roleName: (state) => {
+    return state.userInfo.roleChineseName
+  },
+  companyName: (state) => {
+    return state.userInfo.companyName
+  }
 }
 
 const mutations = {
@@ -109,12 +126,19 @@ const actions = {
         'userName': getStore('kim_un'),
         'id': getStore('kim_id'),
         'company': getStore('kim_cp'),
+        'companyName': getStore('kim_cn'),
         'role': getStore('kim_rl'),
-        'roleName': this.code
+        'roleName': this.code,
+        'roleChineseName': this.value
       })
     })
   },
-
+  // 获取缓存用户信息
+  getSessionUserInfo({
+    commit
+  }, data) {
+    commit('updateUserInfo', data)
+  }
 }
 
 const modules = {

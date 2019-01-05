@@ -32,7 +32,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="进店里程" prop="carMileage">
-          <el-input placeholder="进店里程" v-model="repairOrderForm.carMileage">
+          <el-input placeholder="进店里程" type="number" :min="1" v-model="repairOrderForm.carMileage">
             <template slot="append">km</template>
           </el-input>
         </el-form-item>
@@ -193,8 +193,17 @@
                 <el-checkbox v-model="checked" @change="check" style="margin-right:20px;">使用优惠券</el-checkbox>
               </span>
               <span>总金额:</span>
-              <!-- <strong class="fs14">￥<span class="total">9.00</span></strong> -->
               <strong class="fs18">￥
+                <span class="total" v-if="checked && couponVal" style="color:#999;text-decoration:line-through">
+                  {{(Number(outpartsTotal) + Number(repairsTotal)).toFixed(2)}}
+                </span>
+                <span class="total" v-else style="color:rgb(236, 85, 45);">
+                  {{(Number(outpartsTotal) + Number(repairsTotal)).toFixed(2)}}
+                </span>
+                元
+              </strong>
+              <span v-if="checked && couponVal">优惠后总金额:</span>
+              <strong class="fs18" v-if="checked && couponVal">￥
                 <span class="total" style="color:rgb(236, 85, 45);">
                   {{(Number(outpartsTotal) + Number(repairsTotal) - couponVal).toFixed(2)}}
                 </span>
@@ -341,7 +350,7 @@
         </el-col>
       </el-row>
       <div slot="footer" class="dialog-footer" style="text-align:center">
-        <el-button @click="restForm('repairItemForm')">返 回</el-button>
+        <el-button @click="selectRepairItemForm=false">返 回</el-button>
       </div>
     </el-dialog>
 
@@ -413,7 +422,7 @@
         </el-col>
       </el-row>
       <div slot="footer" class="dialog-footer" style="text-align:center">
-        <el-button @click="restForm('productForm')">返 回</el-button>
+        <el-button @click="showProductForm = false">返 回</el-button>
       </div>
     </el-dialog>
 
@@ -449,7 +458,7 @@
     </el-dialog>
 
     <!-- 客户优惠券列表 -->
-    <el-dialog title="客户优惠券列表" :visible.sync="showCouponList" >
+    <el-dialog title="客户优惠券列表" :visible.sync="showCouponList" :before-close="closeDialog">
       <el-row>
         <el-table
           :data="clientCouponTableData"
@@ -461,7 +470,8 @@
           <el-table-column align="center" prop="num" label="优惠券数量" show-overflow-tooltip></el-table-column>
           <el-table-column align="center" label="操作">
             <template scope="scope">
-              <el-button size="small" @click="useCoupon(scope.$index, scope.row)">使用该优惠券</el-button>
+              <el-button size="small" v-if="parseInt(scope.row.date.couponId.value)<(Number(outpartsTotal) + Number(repairsTotal))" @click="useCoupon(scope.$index, scope.row)">使用该优惠券</el-button>
+              <el-button size="small" v-else :disabled="true">总金额低于该优惠券无法使用</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -651,11 +661,16 @@ export default {
     })
   },
   methods: {
+    // 关闭优惠券弹窗
+    closeDialog(done){
+      done()
+      this.checked = false
+    },
     loadRepairItemData(pageNo, pageSize) {
       let _this = this
       this.$http.get('/supercar/repairItem/page',{
         params: {
-          'search.id_notIn': _this.repairItems.join(""),
+          'search.id_notIn': _this.repairItems.join(","),
           'search.isDeleted_eq': false,
           'page.pn': pageNo,
           'page.size': pageSize
@@ -671,7 +686,7 @@ export default {
       }
       this.$http.get('/supercar/inventory/listInventory',{
         params: {
-          'search.id_notIn': this.outpartItems.join(""),
+          'search.id_notIn': this.outpartItems.join(","),
           'search.company_eq': this.searchcompany,
           'search.isDeleted_eq': false,
           'page.pn': pageNo,
@@ -931,7 +946,6 @@ export default {
                 _this.isLocked = false
               },500)
             }else{
-              //alert(JSON.stringify(_this.repairItemForm))
               setTimeout(function(){
                 _this.repairItemTableDatas.push(_this.repairItemForm)
                 _this.repairItems.push(_this.repairItemForm.id)
@@ -1006,7 +1020,7 @@ export default {
             }else{
               setTimeout(function(){
                 _this.productTableDatas.push(_this.outpartForm)
-                _this.outpartItems.push(_this.outpartForm.id)
+                _this.outpartItems.push(_this.outpartForm.inventoryId)
                 for(var i=0;i<_this.productTableDatas.length;i++){
                   if(_this.productTableDatas[i].discount){
                      _this.productTableDatas[i].subtotal = Number(_this.productTableDatas[i].sale) * Number(_this.productTableDatas[i].count) * Number(_this.productTableDatas[i].discount/10)
@@ -1156,7 +1170,7 @@ export default {
             	"repairWorkorder": {
             		"workorderState": '维修中',//工单状态
             		"repairTypeLK": this.repairOrderForm.repairTypeLK,//维修性质
-            		"sum": Number(this.outpartsTotal) + Number(this.repairsTotal)<=0?'':Number(this.outpartsTotal) + Number(this.repairsTotal),//维修金额
+            		"sum": Number(this.outpartsTotal) + Number(this.repairsTotal) - couponVal <=0?'':Number(this.outpartsTotal) + Number(this.repairsTotal) - couponVal,//维修金额
             		"clerk": this.repairOrderForm.clerk,//服务顾问
             		"carMileage": this.repairOrderForm.carMileage,//进店里程
             		"carOilmeter": this.repairOrderForm.carOilmeter,//进店油表
@@ -1181,6 +1195,7 @@ export default {
             		"outPartInfos": outpartInfos
             	}
             }
+            //console.log(this.outpartsTotal)
             this.$http.post('/supercar/repairWorkorder/newRepairWorkorder', addFormObj).then((response) => {
               if(response.body.success){
                 //this.$store.commit('updateRepairItemCount', Number(this.$store.state.repairItemCount)+1)
@@ -1220,6 +1235,12 @@ export default {
           }
         } else {
           console.log('error submit!!');
+          this.$message({
+            type: 'warning',
+            message: '请填写工单信息',
+            duration: 2000,
+            showClose: true
+          })
           return false;
         }
       })

@@ -18,17 +18,19 @@
       }
     },
     beforeCreate: function () {
-      let loadingInstance = ''
       console.group('beforeCreate 创建前状态=======App.vue========》');
       console.log("%c%s", "color:red" , "el     : " + this.$el); //undefined
       console.log("%c%s", "color:red","data   : " + this.$data); //undefined
       console.log("%c%s", "color:red","message: " + this.message);
-      loadingInstance = this.$loading({ 'fullscreen': true,'text': '玩命加载中...','body': true, });
-      setTimeout(function(){
-        loadingInstance.close();
-      },2000)
     },
     created: function () {
+      // 获取用户信息
+      // this.$store.dispatch("getUserInfo")
+
+      window.addEventListener('beforeunload', () => {
+        setStore('session', JSON.stringify(this.$store.state.userInfo))
+      })
+
       console.group('created 创建完毕状态=======App.vue========》');
       console.log("%c%s", "color:red","el     : " + this.$el); //undefined
       console.log("%c%s", "color:red","data   : " + this.$data); //已被初始化
@@ -78,6 +80,16 @@
     },
     watch: {
 
+    },
+    methods: {
+      // 获取用户信息
+      getUserInfo(){
+        this.$http.get('/supercar/user/login',{params:params}).then((response) => {
+            if(response.body.success){
+
+            }
+        })
+      }
     },
   }
 

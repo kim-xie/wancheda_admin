@@ -150,12 +150,11 @@
 </template>
 
 <script>
-import { getDataFormLUP } from '@/assets/js/utils'
+import { getDataFormLUP, getStore, isSuperAdmin } from '@/assets/js/utils'
+import { mapGetters } from 'vuex'
 export default {
   data (){
     return {
-      userId: '',
-      userRole: '',
       usercompany: '',
       searchcompany: '',
       search: {
@@ -198,16 +197,25 @@ export default {
       formLabelWidth: '120px'
     }
   },
+  computed: {
+    ...mapGetters([
+      'userId',
+      'userRole',
+      'company'
+    ])
+  },
   created() {
-    let _this = this
-    setTimeout(function(){
-      _this.userId = _this.$store.state.userInfo.id
-      _this.userRole = _this.$store.state.userInfo.roleName
-      _this.usercompany = _this.$store.state.userInfo.company
-      _this.searchcompany = _this.$store.state.userInfo.company
-      _this.loadData(_this.pageNo, _this.pageSize)
-    },1000)
-    _this.getCompanys()
+    const _this = this
+    if(!this.userRole){
+      const userInfo = JSON.parse(getStore('session'))
+      this.$store.dispatch('getSessionUserInfo', userInfo)
+    }
+    this.usercompany = this.company
+    this.searchCompany = this.company
+    if(isSuperAdmin(_this.userRole)){
+      _this.getCompanys()
+    }
+    this.loadData(this.pageNo, this.pageSize)
     getDataFormLUP('part_type',function() {_this.pCategory = this})
     getDataFormLUP('unit',function() {_this.unitObj = this})
     getDataFormLUP('part_specification',function() {_this.specification = this})
@@ -217,11 +225,12 @@ export default {
   },
   methods: {
     loadData(pageNo,pageSize) {
-      if(this.userRole == 'super_admin'){
+      if(isSuperAdmin(this.userRole)){
         this.searchcompany = ''
-      } 
+      }
       this.$http.get('/supercar/inventory/listInventory',{
         params: {
+          'loading': true,
           'search.company_eq': this.searchcompany,
           'search.isDeleted_eq': false,
           'page.pn': pageNo,
@@ -251,9 +260,9 @@ export default {
       }
     },
     goSearch() {
-      if(this.userRole == 'super_admin'){
+      if(isSuperAdmin(this.userRole)){
         this.searchcompany = this.search.company
-      } 
+      }
       if(this.search.name || this.search.code || this.search.carModel || this.search.company){
         this.serachData()
       }else{
@@ -269,7 +278,7 @@ export default {
       this.search.name = ''
       this.search.code = ''
       this.search.carModel = ''
-      if(this.userRole == 'super_admin'){
+      if(isSuperAdmin(this.userRole)){
         this.searchcompany = ''
       }
       this.serachData()
@@ -277,6 +286,7 @@ export default {
     serachData(){
       this.$http.get('/supercar/inventory/listInventory',{
         params: {
+          'loading': true,
           'search.company_eq': this.searchcompany,
           'search.isDeleted_eq': false,
           'partName': this.search.name,

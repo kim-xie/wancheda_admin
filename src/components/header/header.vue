@@ -20,11 +20,11 @@
         		<li><a href="javascript:;" id="time"></a></li>
         		<li class="dropdown">
         		  <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                <i class="icon-user mr5"></i> {{this.$store.state.userInfo.userName}} <span class="caret"></span>
+                <i class="icon-user mr5"></i> {{userName}} ({{companyName}} - {{roleName}})<span class="caret"></span>
               </a>
         		  <ul class="dropdown-menu">
-        		    <li><a href="javascript:;">系统设置</a></li>
-        		    <li><a href="javascript:;">账号管理</a></li>
+        		    <!-- <li><a href="/company/list">系统设置</a></li> -->
+        		    <li><a href="/account/list">账号管理</a></li>
         		    <li role="separator" class="divider"></li>
         		    <li @click="logout"><a href="javascript:;"><i class="icon-off mr5"></i>退出</a></li>
         		  </ul>
@@ -37,6 +37,7 @@
 </template>
 <script>
   import {setStore, getStore, removeStore} from '@/assets/js/utils'
+  import { mapGetters } from 'vuex'
   export default {
     name: 'navheader',
     data() {
@@ -45,23 +46,35 @@
         isLogouting: false
       }
     },
+    computed: {
+      ...mapGetters([
+        'userName',
+        'roleName',
+        'userRole',
+        'companyName'
+      ])
+    },
     beforeCreate: function () {
-      
+
     },
     created: function () {
-      var _this = this;
+      const _this = this
+      if(!this.userRole){
+        const userInfo = JSON.parse(getStore('session'))
+        this.$store.dispatch('getSessionUserInfo', userInfo)
+      }
       setInterval(function(){
         $('#time').css("font-size","14px").html(_this.currentTime);
       },1000);
     },
     beforeMount: function () {
-        
+
     },
     mounted: function () {
 
     },
     beforeUpdate: function () {
-       
+
     },
     updated: function () {
       this.$store.state.loading = false
@@ -106,7 +119,9 @@
             removeStore('kim_id')
             removeStore('kim_cp')
             removeStore('kim_rl')
-            this.$store.commit('updateUserInfo', null)
+            removeStore('kim_cn')
+            removeStore('session')
+            //this.$store.commit('updateUserInfo', null)
             //重置loding状态
             this.isLogouting = false
             //跳转到登录页
