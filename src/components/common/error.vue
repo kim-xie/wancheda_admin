@@ -18,7 +18,7 @@
     <footer class="mod-footer mod-cs-footer">
       <div class="clearfix hidden-box"></div>
       <div class="footer-box">
-        <div class="copy-box">©2017&nbsp;www.kimui.cn</div>
+        <div class="copy-box">©2017&nbsp;www.kimshare.club</div>
       </div>
     </footer>
   </div>

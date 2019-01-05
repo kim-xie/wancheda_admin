@@ -64,7 +64,7 @@ export default new Router({
           component: ServiceProject
       	},
         {
-      	  path: '/client/list',
+      	  path: '/client',
           name: '客户维护',
           component: ClientList
       	},

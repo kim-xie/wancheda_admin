@@ -24,7 +24,7 @@
               </a>
         		  <ul class="dropdown-menu">
         		    <!-- <li><a href="/company/list">系统设置</a></li> -->
-        		    <li><a href="/account/list">账号管理</a></li>
+        		    <li><router-link :to="{ name: '账号管理'}">账号管理</router-link></li>
         		    <li role="separator" class="divider"></li>
         		    <li @click="logout"><a href="javascript:;"><i class="icon-off mr5"></i>退出</a></li>
         		  </ul>
