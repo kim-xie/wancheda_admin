@@ -69,92 +69,92 @@ export default new Router({
           component: ClientList
       	},
       	{
-      	  path: '/client/level',
+      	  path: '/clientLevel',
           name: '客户级别',
           component: ClientLevel
       	},
         {
-      	  path: '/product/list',
+      	  path: '/productList',
           name: '配件维护',
           component: ProductList
       	},
         {
-      	  path: '/product/manager',
+      	  path: '/productManager',
           name: '库存管理',
           component: ProductManager
       	},
         {
-      	  path: '/product/add',
+      	  path: '/productAdd',
           name: '配件入库',
           component: ProductAdd
       	},
       	{
-      	  path: '/product/remove',
+      	  path: '/productRemove',
           name: '配件出库',
           component: ProductRemove
       	},
         {
-      	  path: '/financial/list',
+      	  path: '/financial',
           name: '财务统计',
           component: FinancialList
       	},
         {
-      	  path: '/lookup/list',
+      	  path: '/lookup',
           name: '数据字典管理',
           component: LookupList
       	},
         {
-      	  path: '/lookup/lookupDF',
+      	  path: '/lookupDF',
           name: '数据字典定义',
           component: LookupDFList
       	},
         {
-      	  path: '/account/list',
+      	  path: '/account',
           name: '账号管理',
           component: AccountList
       	},
         {
-      	  path: '/account/add',
+      	  path: '/accountAdd',
           name: '添加账号',
           component: AccountAdd
       	},
         {
-      	  path: '/account/edit',
+      	  path: '/accountEdit',
           name: '修改账号',
           component: AccountEdit
       	},
         {
-      	  path: '/role/list',
+      	  path: '/roleList',
           name: '角色管理',
           component: RoleList
       	},
         {
-      	  path: '/role/add',
+      	  path: '/roleAdd',
           name: '添加角色',
           component: RoleAdd
       	},
         {
-      	  path: '/role/edit',
+      	  path: '/roleEdit',
           name: '修改角色',
           component: RoleEdit
       	},
         {
-      	  path: '/company/list',
+      	  path: '/company',
           name: '公司管理',
           component: CompanyList
       	},
         {
-      	  path: '/company/add',
+      	  path: '/companyAdd',
           name: '添加门店',
           component: CompanyAdd
       	},
         {
-      	  path: '/company/edit',
+      	  path: '/companyEdit',
           name: '修改门店',
           component: CompanyEdit
       	},
         {
-      	  path: '/log/list',
+      	  path: '/log',
           name: '系统日志',
           component: LogList
       	}
