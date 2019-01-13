@@ -1170,7 +1170,7 @@ export default {
             	"repairWorkorder": {
             		"workorderState": '维修中',//工单状态
             		"repairTypeLK": this.repairOrderForm.repairTypeLK,//维修性质
-            		"sum": Number(this.outpartsTotal) + Number(this.repairsTotal) - couponVal <=0?'':Number(this.outpartsTotal) + Number(this.repairsTotal) - couponVal,//维修金额
+            		"sum": Number(this.outpartsTotal) + Number(this.repairsTotal) - this.couponVal <=0?'':Number(this.outpartsTotal) + Number(this.repairsTotal) - this.couponVal,//维修金额
             		"clerk": this.repairOrderForm.clerk,//服务顾问
             		"carMileage": this.repairOrderForm.carMileage,//进店里程
             		"carOilmeter": this.repairOrderForm.carOilmeter,//进店油表
