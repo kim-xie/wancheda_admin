@@ -759,6 +759,7 @@ export default {
       let _this = this
       this.$http.get('/supercar/user/page',{
         params: {
+          'search.company_eq': this.searchcompany,
           'search.isDeleted_eq': false,
           "search.id_eq":accountId
         }
