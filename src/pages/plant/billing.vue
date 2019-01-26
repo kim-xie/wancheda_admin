@@ -482,13 +482,12 @@
 </template>
 
 <script>
-import { getDataFormLUP, getDataFormLUPById, checkPrice, dateFormat, checkWorkHour } from '@/assets/js/utils'
+import { getDataFormLUP, getDataFormLUPById, checkPrice, dateFormat, checkWorkHour, getStore, isSuperAdmin } from '@/assets/js/utils'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'billing',
   data (){
     return {
-      userId: '',
-      userRole: '',
       usercompany: '',
       searchcompany: '',
       search: {},
@@ -632,15 +631,29 @@ export default {
     $(".el-card__header").css("padding","5px 20px")
     $(".el-card__body").css("text-align","center")
   },
+  computed: {
+    ...mapGetters([
+      'userId',
+      'userRole',
+      'company'
+    ])
+  },
   created() {
-    let _this = this
-    setTimeout(function(){
-      _this.userId = _this.$store.state.userInfo.id
-      _this.userRole = _this.$store.state.userInfo.roleName
-      _this.usercompany = _this.$store.state.userInfo.company
-      _this.searchcompany = _this.$store.state.userInfo.company
-      _this.loadAccounts()
-    },1000)
+    // setTimeout(function(){
+    //   _this.userId = _this.$store.state.userInfo.id
+    //   _this.userRole = _this.$store.state.userInfo.roleName
+    //   _this.usercompany = _this.$store.state.userInfo.company
+    //   _this.searchcompany = _this.$store.state.userInfo.company
+    //   _this.loadAccounts()
+    // },1000)
+    const _this = this
+    if(!this.userRole){
+      const userInfo = JSON.parse(getStore('session'))
+      this.$store.dispatch('getSessionUserInfo', userInfo)
+    }
+    this.usercompany = this.company
+    this.searchcompany = this.company
+    this.loadAccounts()
     _this.getTreeData()
     getDataFormLUP('client_level',function() {_this.clientGrade = this})
     getDataFormLUP('client_type',function() {_this.clientType = this})
@@ -746,7 +759,7 @@ export default {
       }
       this.$http.get('/supercar/user/page',{
         params: {
-          'search.company_eq': this.searchcompany,
+          'search.company_eq': this.company,
           'search.isDeleted_eq': false,
           'page.pn': 1,
           'page.size': 1000
@@ -759,7 +772,7 @@ export default {
       let _this = this
       this.$http.get('/supercar/user/page',{
         params: {
-          'search.company_eq': this.searchcompany,
+          'search.company_eq': this.company,
           'search.isDeleted_eq': false,
           "search.id_eq":accountId
         }
